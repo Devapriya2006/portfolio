@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEVAPRIYA PAUL KUNDU | Portfolio</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Raleway:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Particles Background -->
+    <div id="particles-js"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <h1>DEVAPRIYA <span>PAUL KUNDU</span></h1>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link active">Home</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#skills" class="nav-link">Skills</a></li>
+                <li><a href="#projects" class="nav-link">Projects</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h3 class="greeting">Hello, I'm</h3>
+                    <h1 class="name">DEVAPRIYA PAUL KUNDU</h1>
+                    <div class="typewriter">
+                        <h2 class="profession">Frontend Developer</h2>
+                    </div>
+                    <p class="intro">Passionate about creating beautiful, functional, and user-friendly web experiences. I turn ideas into reality through code.</p>
+                    <div class="hero-buttons">
+                        <a href="#projects" class="btn btn-primary">View My Work</a>
+                        <a href="#contact" class="btn btn-secondary">Contact Me</a>
+                        <a href="DEVAPRIYA CV (1).pdf" class="btn btn-accent" download id="cvDownloadBtn">
+                            <i class="fas fa-download"></i> Download CV
+                        </a>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <div class="profile-container">
+                        <div class="profile-wrapper">
+                            <div class="avatar-circle">
+                                <!-- Primary photo - will fallback to initials if not loaded -->
+                                <img src="https://i.ibb.co/your-photo-hash/DEVAPRIYA.jpg" 
+                                     alt="Devapriya Paul Kundu" 
+                                     class="profile-photo"
+                                     id="profilePhoto"
+                                     onerror="this.style.display='none'; document.querySelector('.avatar-initials').style.display='flex'">
+                                <!-- Fallback initials -->
+                                <span class="avatar-initials" id="avatarInitials">DP</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Floating Elements -->
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about section-padding" id="about">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">About Me</h2>
+                <div class="underline"></div>
+                <p class="section-subtitle">Get to know me better</p>
+            </div>
+            <div class="about-content">
+                <div class="about-text">
+                    <h3>My Journey in Web Development and IoT System</h3>
+                    <p>Hello! I'm Devapriya Paul Kundu, a developer passionate about connecting the digital and physical worlds. Currently pursuing my Diploma in Computer Science and Technology at Technique Polytechnic Institute (TPI), I have spent the last year refining my skills in Frontend Development, IoT, and Embedded Systems.</p>
+                    <p>My journey is defined by hands-on creation. Over the course of 4+ major projects, I have explored diverse domains:</p>
+                    <ul>
+                        <li><strong>Web Development:</strong> I developed a Waste Food Management System Front-end to tackle food sustainability and I actively apply image recognition using OpenCV to build intelligent, problem-solving applications.</li>
+                        <li><strong>IoT & Embedded Systems:</strong>I designed an Arduino-based Voice Control Automation System, applying engineering principles to create accessible, hands-free smart environments.</li>
+                    </ul>
+                    <p>Beyond code, I am a dedicated problem solver. Whether I am hacking away at a solution during events like Hack Technique 2026 or optimizing code during my internship at SkillCraft Technology, I am driven by the impact technology can have on real-world problems.</p>
+                    <div class="about-details">
+                        <div class="detail-item">
+                            <i class="fas fa-user"></i>
+                            <div>
+                                <h4>Name</h4>
+                                <p>Devapriya Paul Kundu</p>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-envelope"></i>
+                            <div>
+                                <h4>Email</h4>
+                                <p>devapriya2006paul@gmail.com</p>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <div>
+                                <h4>Location</h4>
+                                <p>Khanakul, West Bengal, India</p>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-graduation-cap"></i>
+                            <div>
+                                <h4>Education</h4>
+                                <p>Computer Science Engineering</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-stats">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3>4+</h3>
+                            <p>Projects Completed</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>1+</h3>
+                            <p>Year Experience</p>
+                        </div>
+                        <div class="stat-card highlighted-stat">
+                            <h3>100%</h3>
+                            <p>Frontend Focus</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section class="skills section-padding" id="skills">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">My Skills</h2>
+                <div class="underline"></div>
+                <p class="section-subtitle">Technologies I work with</p>
+            </div>
+            <div class="skills-container">
+                <!-- Skills populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section class="projects section-padding" id="projects">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">My Projects</h2>
+                <div class="underline"></div>
+                <p class="section-subtitle">Some of my recent work</p>
+            </div>
+            <div class="projects-container">
+                <div class="project-card">
+                    <div class="project-image">
+                        <div class="project-image-content">
+                            <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Modern Portfolio" class="project-image-real">
+                            <i class="fas fa-laptop-code project-fallback-icon"></i>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3>Modern Portfolio</h3>
+                        <p>A responsive personal portfolio website with modern animations and effects. Built with HTML, CSS, and JavaScript.</p>
+                        <div class="project-tags">
+                            <span class="tag">HTML5</span>
+                            <span class="tag">CSS3</span>
+                            <span class="tag">JavaScript</span>
+                            <span class="tag">Responsive Design</span>
+                            <span class="tag">Animations</span>
+                        </div>
+                        <div style="margin-top: 25px;">
+                            <a href="https://github.com/Devapriya2006/MODERN-PORTFOLIO" target="_blank" class="btn btn-primary" style="padding: 12px 25px; font-size: 0.95rem;">
+                                <i class="fab fa-github"></i> View on GitHub
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-image">
+                        <div class="project-image-content">
+                            <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Waste Food Management System" class="project-image-real">
+                            <i class="fas fa-recycle project-fallback-icon"></i>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3>Waste Food Management System</h3>
+                        <p>As Frontend Developer, built responsive interfaces for connecting restaurants with NGOs to reduce food waste. Implemented user dashboards, donation tracking, and real-time notifications.</p>
+                        <div class="project-tags">
+                            <span class="tag">HTML</span>
+                            <span class="tag">CSS</span>
+                            <span class="tag">JavaScript</span>
+                            <span class="tag">Firebase</span>
+                            <span class="tag">Responsive Design</span>
+                            <span class="tag">UI/UX</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-image">
+                        <div class="project-image-content">
+                            <img src="https://images.unsplash.com/photo-1560253023-3ec5d502959f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="IoT Voice Control System" class="project-image-real">
+                            <i class="fas fa-microchip project-fallback-icon"></i>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3>IoT Voice Control Automation System</h3>
+                        <p>Developed complete IoT-based home automation using Arduino Uno, Bluetooth HC-05, and IEEE boards. Features voice-controlled lighting, appliances, and security through custom Android app.</p>
+                        <div class="project-tags">
+                            <span class="tag">IoT</span>
+                            <span class="tag">Arduino Uno</span>
+                            <span class="tag">Bluetooth HC-05</span>
+                            <span class="tag">IEEE Boards</span>
+                            <span class="tag">Embedded Systems</span>
+                            <span class="tag">Android App</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-image">
+                        <div class="project-image-content">
+                            <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Image Recognition System" class="project-image-real">
+                            <i class="fas fa-eye project-fallback-icon"></i>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3>Image Recognition System</h3>
+                        <p>A computer vision application using OpenCV for real-time image processing and object recognition with a web interface.</p>
+                        <div class="project-tags">
+                            <span class="tag">Python</span>
+                            <span class="tag">OpenCV</span>
+                            <span class="tag">Flask</span>
+                            <span class="tag">Computer Vision</span>
+                            <span class="tag">Image Processing</span>
+                        </div>
+                        <div style="margin-top: 25px;">
+                            <a href="https://github.com/Devapriya2006/IMAGE-RECOGNIZATION-USING-OPEN-CV" target="_blank" class="btn btn-primary" style="padding: 12px 25px; font-size: 0.95rem;">
+                                <i class="fab fa-github"></i> View on GitHub
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section - WITHOUT FORM -->
+    <section class="contact section-padding" id="contact">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Contact Me</h2>
+                <div class="underline"></div>
+                <p class="section-subtitle">Let's work together</p>
+            </div>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h3>Get in Touch</h3>
+                    <p>I'm always open to discussing new opportunities, interesting projects, or just having a friendly chat about technology.</p>
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <div>
+                                <h4>Email</h4>
+                                <p>devapriya2006paul@gmail.com</p>
+                                <a href="mailto:devapriya2006paul@gmail.com" 
+                                   class="direct-contact-link">
+                                   <i class="fas fa-paper-plane"></i> Send Email
+                                </a>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <div>
+                                <h4>Phone</h4>
+                                <p>+91 9832341502</p>
+                                <a href="tel:+919832341502" 
+                                   class="direct-contact-link">
+                                   <i class="fas fa-phone-alt"></i> Call Now
+                                </a>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <div>
+                                <h4>Location</h4>
+                                <p>Khanakul, West Bengal, India</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-comments"></i>
+                            <div>
+                                <h4>Quick Message</h4>
+                                <p>Available for freelance work</p>
+                                <a href="https://wa.me/919832341502?text=Hi%20Devapriya,%20I%20saw%20your%20portfolio" 
+                                   target="_blank"
+                                   class="direct-contact-link">
+                                   <i class="fab fa-whatsapp"></i> WhatsApp
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="social-links">
+                        <a href="https://github.com/Devapriya2006" target="_blank" class="social-link" title="GitHub">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/in/devapriya-paul-kundu-0a1472343" target="_blank" class="social-link" title="LinkedIn">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        <a href="https://www.instagram.com/imdevapriyapaul" target="_blank" class="social-link" title="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://www.facebook.com/share/1DL6Y1rC8x/" target="_blank" class="social-link" title="Facebook">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Simple Contact Box without form -->
+                <div class="contact-box">
+                    <div class="contact-box-content">
+                        <h3><i class="fas fa-bolt"></i> Quick Contact</h3>
+                        <p>For fastest response, use these direct methods:</p>
+                        <div class="contact-methods">
+                            <a href="mailto:devapriya2006paul@gmail.com" class="contact-method email">
+                                <i class="fas fa-envelope"></i>
+                                <span>Email Me</span>
+                            </a>
+                            <a href="tel:+919832341502" class="contact-method phone">
+                                <i class="fas fa-phone"></i>
+                                <span>Call Me</span>
+                            </a>
+                            <a href="https://wa.me/919832341502?text=Hi%20Devapriya,%20I%20saw%20your%20portfolio" 
+                               target="_blank" 
+                               class="contact-method whatsapp">
+                                <i class="fab fa-whatsapp"></i>
+                                <span>WhatsApp</span>
+                            </a>
+                        </div>
+                        <div class="contact-hours">
+                            <h4><i class="fas fa-clock"></i> Best Time to Reach</h4>
+                            <p>Monday - Friday: 9 AM - 6 PM IST</p>
+                            <p>Response Time: Within 24 hours</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h2>DEVAPRIYA PAUL KUNDU</h2>
+                    <p>Frontend Developer & IoT Enthusiast</p>
+                </div>
+                <div class="footer-links">
+                    <a href="#home">Home</a>
+                    <a href="#about">About</a>
+                    <a href="#skills">Skills</a>
+                    <a href="#projects">Projects</a>
+                    <a href="#contact">Contact</a>
+                </div>
+                <div class="copyright">
+                    <p>&copy; <span id="currentYear"></span> Devapriya Paul Kundu. All rights reserved.</p>
+                    <p style="margin-top: 10px; font-size: 0.9rem; font-weight: 600; color: #8b5cf6; letter-spacing: 0.5px;">
+                        Made by Mr DPK
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Hidden CV Fallback -->
+    <a id="cvFallback" style="display: none;"></a>
+
+    <!-- Particles.js CDN -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

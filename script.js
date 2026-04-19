@@ -1,15 +1,17 @@
-// Modern script.js with profile photo fix and no contact form
+// Modern script.js with profile photo fix and contact form handling
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Modern Portfolio Website Loaded Successfully! 🚀');
     
     // Initialize loading screen
     const loadingScreen = document.querySelector('.loading-screen');
-    setTimeout(() => {
-        loadingScreen.classList.add('loaded');
+    if (loadingScreen) {
         setTimeout(() => {
-            loadingScreen.remove();
-        }, 500);
-    }, 1000);
+            loadingScreen.classList.add('loaded');
+            setTimeout(() => {
+                loadingScreen.remove();
+            }, 500);
+        }, 1000);
+    }
 
     // Navigation functionality
     const hamburger = document.querySelector('.hamburger');
@@ -17,15 +19,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const navLinks = document.querySelectorAll('.nav-link');
     const navbar = document.querySelector('.navbar');
     
-    hamburger.addEventListener('click', () => {
-        hamburger.classList.toggle('active');
-        navMenu.classList.toggle('active');
-    });
+    if (hamburger && navMenu) {
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+    }
     
     navLinks.forEach(link => {
         link.addEventListener('click', () => {
-            hamburger.classList.remove('active');
-            navMenu.classList.remove('active');
+            if (hamburger && navMenu) {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+            }
             
             navLinks.forEach(item => item.classList.remove('active'));
             link.classList.add('active');
@@ -33,12 +39,34 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Navbar scroll effect
+    if (navbar) {
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+    }
+
+    // Active section highlighting
+    const sections = document.querySelectorAll('section');
     window.addEventListener('scroll', () => {
-        if (window.scrollY > 50) {
-            navbar.classList.add('scrolled');
-        } else {
-            navbar.classList.remove('scrolled');
-        }
+        let current = '';
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.clientHeight;
+            if (scrollY >= (sectionTop - 200)) {
+                current = section.getAttribute('id');
+            }
+        });
+
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href').substring(1) === current) {
+                link.classList.add('active');
+            }
+        });
     });
 
     // =============================================
@@ -53,77 +81,86 @@ document.addEventListener('DOMContentLoaded', function() {
         'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
         'https://images.unsplash.com/photo-1499996860823-5214fcc65f8f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
         'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
-        'https://images.unsplash.com/photo-1566492031773-4f4e44671fc6?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
+        'https://images.unsplash.com/photo-1566492031773-4f4e71fc6c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
     ];
     
     // Function to set profile photo with fallback
-    function setProfilePhotoWithFallback() {
-        // First, try to load the local photo
-        const localPhoto = new Image();
+    if (profilePhoto) {
+        let retryCount = 0;
+        const maxRetries = 3;
         
-        // Use a timestamp to avoid caching issues
-        localPhoto.src = 'DEVAPRIYA.jpeg?' + new Date().getTime();
-        
-        localPhoto.onload = function() {
-            console.log('✅ Personal photo loaded successfully from local');
-            profilePhoto.src = localPhoto.src;
-            profilePhoto.style.display = 'block';
-            if (avatarInitials) {
-                avatarInitials.style.display = 'none';
-            }
+        function setProfilePhotoWithFallback() {
+            // Try local photo paths in order
+            const localPaths = [
+                'DEVAPRIYA.jpeg?' + new Date().getTime(),
+                'devapriya.jpeg?' + new Date().getTime(),
+                'DEVAPRIYA.jpg?' + new Date().getTime(),
+                'devapriya.jpg?' + new Date().getTime(),
+                'images/DEVAPRIYA.jpeg?' + new Date().getTime(),
+                'assets/DEVAPRIYA.jpeg?' + new Date().getTime()
+            ];
             
-            // Test if the image is actually loaded (some browsers might trigger onload for broken images)
-            setTimeout(() => {
-                if (profilePhoto.naturalHeight === 0 || profilePhoto.naturalWidth === 0) {
-                    console.log('⚠️ Photo loaded but appears broken, using fallback');
+            tryLocalPath(0);
+            
+            function tryLocalPath(index) {
+                if (index >= localPaths.length) {
                     useFallbackImage();
+                    return;
                 }
-            }, 100);
-        };
-        
-        localPhoto.onerror = function() {
-            console.log('❌ Local photo not found, using fallback');
-            useFallbackImage();
-        };
-        
-        // Set a timeout in case the image takes too long to load
-        setTimeout(() => {
-            if (profilePhoto.naturalHeight === 0 && !profilePhoto.src.includes('unsplash')) {
-                console.log('⏰ Photo loading timed out, using fallback');
-                useFallbackImage();
+                
+                const localPhoto = new Image();
+                localPhoto.src = localPaths[index];
+                
+                localPhoto.onload = function() {
+                    console.log('✅ Personal photo loaded successfully from:', localPaths[index]);
+                    profilePhoto.src = localPhoto.src;
+                    profilePhoto.style.display = 'block';
+                    if (avatarInitials) {
+                        avatarInitials.style.display = 'none';
+                    }
+                };
+                
+                localPhoto.onerror = function() {
+                    console.log('❌ Failed to load from:', localPaths[index]);
+                    tryLocalPath(index + 1);
+                };
+                
+                // Timeout for slow loading
+                setTimeout(() => {
+                    if (profilePhoto.naturalHeight === 0) {
+                        tryLocalPath(index + 1);
+                    }
+                }, 2000);
             }
-        }, 3000);
-        
-        function useFallbackImage() {
-            // Pick a random backup image
-            const randomIndex = Math.floor(Math.random() * backupImages.length);
-            profilePhoto.src = backupImages[randomIndex];
-            profilePhoto.style.display = 'block';
             
-            // Show initials over the backup image
-            if (avatarInitials) {
-                avatarInitials.style.display = 'flex';
-                avatarInitials.style.background = 'rgba(99, 102, 241, 0.8)';
-                avatarInitials.style.backdropFilter = 'blur(5px)';
+            function useFallbackImage() {
+                retryCount++;
+                console.log(`🔄 Using fallback image (attempt ${retryCount}/${maxRetries})`);
+                
+                // Pick a random backup image
+                const randomIndex = Math.floor(Math.random() * backupImages.length);
+                profilePhoto.src = backupImages[randomIndex];
+                profilePhoto.style.display = 'block';
+                
+                // Show initials over the backup image
+                if (avatarInitials) {
+                    avatarInitials.style.display = 'flex';
+                    avatarInitials.style.background = 'rgba(99, 102, 241, 0.8)';
+                    avatarInitials.style.backdropFilter = 'blur(5px)';
+                }
+                
+                // Store that we're using a fallback
+                localStorage.setItem('usingFallbackPhoto', 'true');
             }
         }
-    }
-    
-    // Initialize profile photo
-    if (profilePhoto) {
-        setProfilePhotoWithFallback();
         
-        // Retry loading photo after page is fully loaded
-        window.addEventListener('load', function() {
-            if (profilePhoto.naturalHeight === 0 && !profilePhoto.src.includes('unsplash')) {
-                console.log('🔄 Retrying photo load after page load');
-                setProfilePhotoWithFallback();
-            }
-        });
+        setProfilePhotoWithFallback();
+    } else {
+        console.warn('Profile photo element not found');
     }
 
     // Initialize Particles.js for background
-    if (typeof particlesJS !== 'undefined') {
+    if (typeof particlesJS !== 'undefined' && document.getElementById('particles-js')) {
         particlesJS('particles-js', {
             particles: {
                 number: { value: 60, density: { enable: true, value_area: 800 } },
@@ -162,20 +199,25 @@ document.addEventListener('DOMContentLoaded', function() {
     // Back to top button
     const backToTopButton = document.getElementById('backToTop');
     
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 300) {
-            backToTopButton.style.display = 'flex';
-        } else {
-            backToTopButton.style.display = 'none';
-        }
-    });
-    
-    backToTopButton.addEventListener('click', () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
+    if (backToTopButton) {
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                backToTopButton.classList.add('visible');
+            } else {
+                backToTopButton.classList.remove('visible');
+            }
+        });
+        
+        backToTopButton.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
     
     // Set current year in footer
-    document.getElementById('currentYear').textContent = new Date().getFullYear();
+    const currentYearSpan = document.getElementById('currentYear');
+    if (currentYearSpan) {
+        currentYearSpan.textContent = new Date().getFullYear();
+    }
     
     // Skills data
     const skills = [
@@ -220,6 +262,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Populate skills section
     const skillsContainer = document.querySelector('.skills-container');
     if (skillsContainer) {
+        skillsContainer.innerHTML = ''; // Clear existing content
         skills.forEach(skill => {
             const skillCard = document.createElement('div');
             skillCard.className = 'skill-card';
@@ -229,9 +272,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 <p>${skill.description}</p>
                 <div class="skill-progress">
                     <div class="progress-bar">
-                        <div class="progress-fill" data-progress="${skill.progress}"></div>
+                        <div class="progress-fill" data-progress="${skill.progress}" style="width: 0%"></div>
                     </div>
                     <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                        <span class="progress-percentage">0%</span>
                         <span>${skill.progress}%</span>
                     </div>
                 </div>
@@ -243,14 +287,40 @@ document.addEventListener('DOMContentLoaded', function() {
     // Animate progress bars when in viewport
     function animateProgressBars() {
         const progressBars = document.querySelectorAll('.progress-fill');
-        progressBars.forEach(bar => {
+        const progressPercentages = document.querySelectorAll('.progress-percentage');
+        
+        progressBars.forEach((bar, index) => {
             const progress = bar.getAttribute('data-progress');
-            bar.style.width = `${progress}%`;
+            if (progress) {
+                // Animate width
+                bar.style.transition = 'width 1.5s ease-out';
+                bar.style.width = `${progress}%`;
+                
+                // Animate percentage text if exists
+                if (progressPercentages[index]) {
+                    let currentProgress = 0;
+                    const targetProgress = parseInt(progress);
+                    const interval = setInterval(() => {
+                        if (currentProgress >= targetProgress) {
+                            clearInterval(interval);
+                            progressPercentages[index].textContent = `${targetProgress}%`;
+                        } else {
+                            currentProgress++;
+                            progressPercentages[index].textContent = `${currentProgress}%`;
+                        }
+                    }, 15);
+                }
+            }
         });
     }
     
-    // Notification system (for CV download)
-    function showNotification(message, type) {
+    // =============================================
+    // CONTACT FORM HANDLING
+    // =============================================
+    const contactForm = document.querySelector('.contact-form');
+    
+    // Notification system
+    function showNotification(message, type = 'success') {
         // Remove existing notifications
         document.querySelectorAll('.notification').forEach(n => n.remove());
         
@@ -262,13 +332,47 @@ document.addEventListener('DOMContentLoaded', function() {
             <button class="notification-close"><i class="fas fa-times"></i></button>
         `;
         
+        // Add styles if not in CSS
+        notification.style.cssText = `
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
+            color: white;
+            padding: 16px 20px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            z-index: 10000;
+            animation: slideIn 0.3s ease;
+            max-width: 350px;
+            backdrop-filter: blur(10px);
+        `;
+        
         document.body.appendChild(notification);
         
         // Close button functionality
-        notification.querySelector('.notification-close').addEventListener('click', () => {
-            notification.style.animation = 'slideOut 0.3s ease forwards';
-            setTimeout(() => notification.remove(), 300);
-        });
+        const closeBtn = notification.querySelector('.notification-close');
+        if (closeBtn) {
+            closeBtn.style.cssText = `
+                background: none;
+                border: none;
+                color: white;
+                cursor: pointer;
+                padding: 5px;
+                margin-left: auto;
+                opacity: 0.8;
+                transition: opacity 0.3s;
+            `;
+            closeBtn.addEventListener('mouseenter', () => closeBtn.style.opacity = '1');
+            closeBtn.addEventListener('mouseleave', () => closeBtn.style.opacity = '0.8');
+            closeBtn.addEventListener('click', () => {
+                notification.style.animation = 'slideOut 0.3s ease forwards';
+                setTimeout(() => notification.remove(), 300);
+            });
+        }
         
         // Auto remove after 5 seconds
         setTimeout(() => {
@@ -279,10 +383,69 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 5000);
     }
     
+    // Handle form submission
+    if (contactForm) {
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const formData = {
+                name: contactForm.querySelector('input[name="name"]')?.value || '',
+                email: contactForm.querySelector('input[name="email"]')?.value || '',
+                subject: contactForm.querySelector('input[name="subject"]')?.value || 'Portfolio Contact',
+                message: contactForm.querySelector('textarea[name="message"]')?.value || ''
+            };
+            
+            // Validate form
+            if (!formData.name || !formData.email || !formData.message) {
+                showNotification('Please fill in all required fields!', 'error');
+                return;
+            }
+            
+            // Validate email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(formData.email)) {
+                showNotification('Please enter a valid email address!', 'error');
+                return;
+            }
+            
+            // Show loading state
+            const submitBtn = contactForm.querySelector('.submit-btn');
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+            submitBtn.disabled = true;
+            
+            // Save to localStorage for demo
+            setTimeout(() => {
+                const messages = JSON.parse(localStorage.getItem('contactMessages') || '[]');
+                messages.push({
+                    ...formData,
+                    timestamp: new Date().toISOString()
+                });
+                localStorage.setItem('contactMessages', JSON.stringify(messages));
+                
+                // Open default email client
+                const mailtoLink = `mailto:devapriya2006paul@gmail.com?subject=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(
+                    `Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`
+                )}`;
+                
+                showNotification('Opening your email client to send the message.', 'info');
+                
+                setTimeout(() => {
+                    window.location.href = mailtoLink;
+                }, 1500);
+                
+                submitBtn.innerHTML = originalBtnText;
+                submitBtn.disabled = false;
+                contactForm.reset();
+            }, 1000);
+        });
+    }
+    
     // Typewriter effect
     const professionElement = document.querySelector('.profession');
     if (professionElement) {
-        const professions = ['Frontend Developer', 'IoT Developer', 'Web Developer', 'Embedded Systems', 'Problem Solver'];
+        const professions = ['Frontend Developer', 'IoT Developer', 'Web Developer', 'Problem Solver'];
         let professionIndex = 0;
         let charIndex = 0;
         let isDeleting = false;
@@ -342,37 +505,36 @@ Passionate Frontend Developer with 1+ year of experience in creating responsive 
 
 TECHNICAL SKILLS:
 • Frontend: HTML5, CSS3, JavaScript, Responsive Design
-• IoT & Embedded Systems: Arduino Uno, Bluetooth HC-05, IEEE Boards, Sensor Integration, C++ Programming
+• IoT & Embedded Systems: Arduino Uno, Bluetooth HC-05, IEEE Boards, Sensor Integration
 • Tools: Git, VS Code, Chrome DevTools, Arduino IDE
-• Concepts: UI/UX Principles, Cross-browser Compatibility, IoT Protocols, Hardware-Software Integration
 • Other: OpenCV Basics, Computer Vision Fundamentals
 
 PROJECT EXPERIENCE:
 
-1. Modern Portfolio Website
-   - Built a responsive portfolio with modern animations and glassmorphism effects
-   - Implemented smooth transitions, particle backgrounds, and interactive elements
+1. Modern Weather Forecast
+   - Real-time weather application with API integration
+   - 5-day forecast, location search, dynamic UI updates
+   - Technologies: HTML5, CSS3, JavaScript, OpenWeatherMap API
+
+2. Modern Portfolio Website
+   - Responsive portfolio with modern animations and effects
+   - Implemented smooth transitions, particle backgrounds
    - Technologies: HTML5, CSS3, JavaScript, Particles.js
 
-2. Waste Food Management System (Frontend Developer Role)
-   - Developed frontend interfaces for connecting restaurants with NGOs
-   - Created responsive dashboards for food donation management
-   - Implemented real-time notifications and donation tracking
+3. Waste Food Management System
+   - Frontend interfaces for connecting restaurants with NGOs
+   - Responsive dashboards for food donation management
    - Technologies: HTML, CSS, JavaScript, Firebase
 
-3. IoT Voice Control Automation System
-   - Developed complete IoT-based home automation system using Arduino Uno
-   - Implemented Bluetooth HC-05 module for wireless device control
-   - Built custom Android app for voice commands and real-time monitoring
-   - Integrated IEEE boards for smart device connectivity and control
-   - Features voice-controlled lighting, appliances, and security systems
-   - Technologies: Arduino Uno, Bluetooth HC-05, C++, Android Development, IEEE Boards
+4. IoT Voice Control Automation System
+   - IoT-based home automation using Arduino Uno
+   - Bluetooth HC-05 module for wireless device control
+   - Technologies: Arduino Uno, Bluetooth HC-05, C++
 
-4. Image Recognition System
-   - Implemented computer vision algorithms using OpenCV
-   - Built web interface for image processing and object recognition
-   - Features face detection and real-time video processing
-   - Technologies: Python, OpenCV, Flask, Computer Vision
+5. Image Recognition System
+   - Computer vision algorithms using OpenCV
+   - Web interface for image processing
+   - Technologies: Python, OpenCV, Flask
 
 EDUCATION:
 Computer Science Engineering
@@ -383,26 +545,31 @@ This CV was generated from my portfolio website.
 Last updated: ${new Date().toLocaleDateString()}
             `;
             
-            // Check if PDF exists
+            // Try to download PDF first
             const pdfUrl = 'DEVAPRIYA CV (1).pdf';
-            fetch(pdfUrl)
-                .then(response => {
-                    if (response.ok) {
-                        console.log('PDF CV found, downloading...');
-                        // PDF exists, let the default download happen
-                        showNotification('CV download started!', 'success');
-                    } else {
-                        throw new Error('PDF not found');
-                    }
-                })
-                .catch(() => {
-                    // PDF doesn't exist, use fallback
-                    e.preventDefault();
+            
+            // Create hidden iframe to test PDF availability
+            const testFrame = document.createElement('iframe');
+            testFrame.style.display = 'none';
+            testFrame.onload = function() {
+                setTimeout(() => {
+                    document.body.removeChild(testFrame);
+                    showNotification('CV download started!', 'success');
+                }, 100);
+            };
+            testFrame.onerror = function() {
+                document.body.removeChild(testFrame);
+                // PDF doesn't exist, use fallback
+                e.preventDefault();
+                if (cvFallback) {
                     cvFallback.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(cvContent);
                     cvFallback.download = 'Devapriya_Paul_Kundu_CV.txt';
                     cvFallback.click();
-                    showNotification('Downloading CV as text file. Please rename extension to .txt to open.', 'info');
-                });
+                    showNotification('Downloading CV as text file.', 'info');
+                }
+            };
+            testFrame.src = pdfUrl;
+            document.body.appendChild(testFrame);
         });
     }
     
@@ -412,18 +579,20 @@ Last updated: ${new Date().toLocaleDateString()}
         const fallbackIcons = document.querySelectorAll('.project-fallback-icon');
         
         projectImages.forEach((img, index) => {
-            img.onerror = function() {
-                this.style.display = 'none';
-                if (fallbackIcons[index]) {
-                    fallbackIcons[index].style.display = 'flex';
-                }
-            };
-            
-            // Check if image loaded successfully
-            if (img.complete && img.naturalHeight === 0) {
-                img.style.display = 'none';
-                if (fallbackIcons[index]) {
-                    fallbackIcons[index].style.display = 'flex';
+            if (img) {
+                img.onerror = function() {
+                    this.style.display = 'none';
+                    if (fallbackIcons[index]) {
+                        fallbackIcons[index].style.display = 'flex';
+                    }
+                };
+                
+                // Check if image loaded successfully
+                if (img.complete && img.naturalHeight === 0) {
+                    img.style.display = 'none';
+                    if (fallbackIcons[index]) {
+                        fallbackIcons[index].style.display = 'flex';
+                    }
                 }
             }
         });
@@ -451,6 +620,74 @@ Last updated: ${new Date().toLocaleDateString()}
         observer.observe(section);
     });
     
+    // Add animation keyframes dynamically
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+        
+        .back-to-top {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .skill-card {
+            animation: fadeInUp 0.6s ease forwards;
+            opacity: 0;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .skill-card:nth-child(1) { animation-delay: 0.1s; }
+        .skill-card:nth-child(2) { animation-delay: 0.2s; }
+        .skill-card:nth-child(3) { animation-delay: 0.3s; }
+        .skill-card:nth-child(4) { animation-delay: 0.4s; }
+        .skill-card:nth-child(5) { animation-delay: 0.5s; }
+        .skill-card:nth-child(6) { animation-delay: 0.6s; }
+    `;
+    document.head.appendChild(style);
+    
+    // Trigger skill card animations
+    setTimeout(() => {
+        document.querySelectorAll('.skill-card').forEach(card => {
+            card.style.opacity = '1';
+        });
+    }, 100);
+    
     // Floating elements animation
     const floatingElements = document.querySelectorAll('.floating-element');
     floatingElements.forEach((element, index) => {
@@ -468,15 +705,5 @@ Last updated: ${new Date().toLocaleDateString()}
         }, 4000);
     }
     
-    // Add smooth hover effects to contact methods
-    const contactMethods = document.querySelectorAll('.contact-method');
-    contactMethods.forEach(method => {
-        method.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-5px)';
-        });
-        
-        method.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0)';
-        });
-    });
+    console.log('✅ Portfolio website fully initialized! ✨');
 });

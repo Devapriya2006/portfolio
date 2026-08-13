@@ -376,14 +376,14 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // =============================================
     // BACKEND API URL
-    // Local development: http://localhost:5000/api/contact
+    // Local development:https://devstudio-bfye.onrender.com/
     // Same-origin deploy: /api/contact
     // Custom deploy: set window.PORTFOLIO_BACKEND_URL before loading this script
     // =============================================
     const BACKEND_URL =
         window.PORTFOLIO_BACKEND_URL ||
         (window.location.protocol === 'file:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-            ? 'http://localhost:5000/api/contact'
+            ? 'https://devstudio-bfye.onrender.com/api/contact'
             : '/api/contact');
 
     if (contactForm) {

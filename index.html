@@ -6,7 +6,22 @@
     <title>DEVAPRIYA PAUL KUNDU | Portfolio</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Raleway:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        .footer-credit {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--gold);
+            letter-spacing: 0.5px;
+        }
+
+        .hidden-cv-fallback {
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <!-- Loading Screen -->
@@ -14,20 +29,26 @@
         <div class="loader"></div>
     </div>
 
-    <!-- Particles Background -->
-    <div id="particles-js"></div>
+    <!-- Custom Background Layer (auto-loads your own background image if you add one) -->
+    <div id="custom-bg" aria-hidden="true"></div>
+
+    <!-- 3D Jersey-Stripe Background -->
+    <div id="bg-3d" aria-hidden="true"></div>
 
     <!-- Navigation -->
     <nav class="navbar">
         <div class="container">
             <div class="logo">
-                <h1>DEVAPRIYA <span>PAUL KUNDU</span></h1>
+                <h1>⭐DEVSTUDIO<span>⭐</span></h1>
             </div>
             <ul class="nav-menu">
                 <li><a href="#home" class="nav-link active">Home</a></li>
                 <li><a href="#about" class="nav-link">About</a></li>
                 <li><a href="#skills" class="nav-link">Skills</a></li>
                 <li><a href="#projects" class="nav-link">Projects</a></li>
+                <li><a href="#experience" class="nav-link">Experience</a></li>
+                <li><a href="#certificates" class="nav-link">Certificates</a></li>
+                <li><a href="#college-life" class="nav-link">College Life</a></li>
                 <li><a href="#contact" class="nav-link">Contact</a></li>
             </ul>
             <div class="hamburger">
@@ -43,39 +64,78 @@
         <div class="container">
             <div class="hero-content">
                 <div class="hero-text">
-                    <h3 class="greeting">Hello, I'm</h3>
-                    <h1 class="name">DEVAPRIYA PAUL KUNDU</h1>
+                    <h3 class="greeting">Hello, I'm <span class="wave">👋</span></h3>
+                    <h1 class="name">DEVAPRIYA<br><span class="name-accent">PAUL KUNDU</span></h1>
                     <div class="typewriter">
-                        <h2 class="profession">Frontend Developer</h2>
+                        <h2 class="profession">Full Stack Developer</h2>
+                        <span class="code-icon" aria-hidden="true">&lt;/&gt;</span>
                     </div>
-                    <p class="intro">Passionate about creating beautiful, functional, and user-friendly web experiences. I turn ideas into reality through code.</p>
+                    <p class="tagline"><span class="tag-highlight">Web</span> Developer | AI Enthusiast | Problem Solver</p>
+                    <p class="intro">I craft responsive, user-friendly web experiences that blend <span class="hl-design">design</span>, <span class="hl-code">code</span>, and creativity.</p>
                     <div class="hero-buttons">
-                        <a href="#projects" class="btn btn-primary">View My Work</a>
-                        <a href="#contact" class="btn btn-secondary">Contact Me</a>
-                        <a href="DEVAPRIYA CV (1).pdf" class="btn btn-accent" download id="cvDownloadBtn">
-                            <i class="fas fa-download"></i> Download CV
-                        </a>
+                        <a href="#projects" class="btn btn-primary">View Projects <i class="fas fa-arrow-right"></i></a>
+                        <a href="#contact" class="btn btn-secondary"><i class="fas fa-envelope"></i> Contact Me</a>
+                    </div>
+                    <div class="social-row">
+                        <a href="https://github.com/Devapriya2006" target="_blank" rel="noopener" class="social-link" title="GitHub" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                        <a href="https://www.linkedin.com/in/devapriya-paul-kundu-0a1472343" target="_blank" rel="noopener" class="social-link" title="LinkedIn" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="https://www.facebook.com/share/1DL6Y1rC8x/" target="_blank" rel="noopener" class="social-link" title="Facebook" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://www.instagram.com/imdevapriyapaul" target="_blank" rel="noopener" class="social-link social-insta" title="Instagram" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
                     </div>
                 </div>
                 <div class="hero-image">
-                    <div class="profile-container">
-                        <div class="profile-wrapper">
-                            <div class="avatar-circle">
-                                <!-- Primary photo - will fallback to initials if not loaded -->
-                                <img src="https://i.ibb.co/your-photo-hash/DEVAPRIYA.jpg" 
-                                     alt="Devapriya Paul Kundu" 
-                                     class="profile-photo"
-                                     id="profilePhoto"
-                                     onerror="this.style.display='none'; document.querySelector('.avatar-initials').style.display='flex'">
-                                <!-- Fallback initials -->
-                                <span class="avatar-initials" id="avatarInitials">DP</span>
+                    <div class="hero-quote-card">
+                        <p class="quote-line ql-1">WHATEVER YOU WANT TO DO, DO IT WITH FULL PASSION, AND WORK REALLY HARD TOWARDS IT". </p>
+                        <span class="quote-author">- Virat Kohli</span>
+                    </div>
+                    <div class="hero-profile-card">
+                        <div class="profile-container">
+                            <div class="profile-wrapper">
+                                <div class="avatar-circle">
+                                    <!-- Primary photo - will fallback to initials if not loaded -->
+                                    <img src="https://i.ibb.co/your-photo-hash/DEVAPRIYA.jpg" 
+                                         alt="Devapriya Paul Kundu" 
+                                         class="profile-photo"
+                                         id="profilePhoto"
+                                         onerror="this.style.display='none'; document.querySelector('.avatar-initials').style.display='flex'">
+                                    <!-- Fallback initials -->
+                                    <span class="avatar-initials" id="avatarInitials">DP</span>
+                                </div>
+                                <span class="status-dot" aria-hidden="true"></span>
                             </div>
+                        </div>
+                        <h4 class="profile-name">Devapriya Paul Kundu</h4>
+                        <p class="profile-role">Full Stack Developer</p>
+                        <ul class="profile-details">
+                            <li><i class="fas fa-calendar-alt"></i> 14 December 2006</li>
+                            <li><i class="fas fa-map-marker-alt"></i> Khanakul, West Bengal, India</li>
+                        </ul>
+                        <div class="profile-status">
+                            <span class="status-indicator"></span> Available for opportunities
                         </div>
                     </div>
                 </div>
             </div>
+
+            <div class="hero-stats-bar">
+                <div class="hero-stat-item">
+                    <i class="fas fa-code"></i>
+                    <div><strong>5+</strong><span>Projects</span></div>
+                </div>
+                <div class="hero-stat-item">
+                    <i class="fas fa-mug-hot"></i>
+                    <div><strong>&#8734;</strong><span>Cups of Coffee</span></div>
+                </div>
+            </div>
         </div>
-        
+
+        <div class="hero-bottom-strip">
+            <div class="container hero-bottom-inner">
+                <p class="hero-bottom-quote"><i class="fas fa-quote-left"></i> Building <span class="accent-cream">today</span>. Impacting <span class="accent-orange">tomorrow</span>.</p>
+                <p class="hero-bottom-cta">LET'S BUILD SOMETHING <span class="accent-cyan">AMAZING</span> TOGETHER. <i class="fas fa-rocket"></i></p>
+            </div>
+        </div>
+
         <!-- Floating Elements -->
         <div class="floating-element"></div>
         <div class="floating-element"></div>
@@ -91,9 +151,41 @@
                 <p class="section-subtitle">Get to know me better</p>
             </div>
             <div class="about-content">
+                <div class="about-media">
+                    <div class="about-image-frame">
+                        <div class="about-image-glow" aria-hidden="true"></div>
+                        <img src="DEVAPRIYAABOUT.jpeg"
+                             alt="Devapriya Paul Kundu"
+                             class="about-image"
+                             id="aboutPhoto"
+                             onerror="this.style.display='none'; document.getElementById('aboutMonogram').style.display='flex'">
+                        <div class="about-monogram" id="aboutMonogram">
+                            <span>DP</span>
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <span class="about-image-badge"><i class="fas fa-circle"></i> Available for opportunities</span>
+                    </div>
+                    <a href="DEVAPRIYA CV (1).pdf" class="btn btn-primary about-resume-btn cv-download-trigger" download>
+                        <i class="fas fa-download"></i> Download Resume
+                    </a>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3 data-count-target="5" data-count-suffix="+">0+</h3>
+                            <p>Projects Completed</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3 data-count-target="1" data-count-suffix="+">0+</h3>
+                            <p>Year Experience</p>
+                        </div>
+                        <div class="stat-card highlighted-stat">
+                            <h3 data-count-target="100" data-count-suffix="%">0%</h3>
+                            <p>Full Stack Focus</p>
+                        </div>
+                    </div>
+                </div>
                 <div class="about-text">
                     <h3>My Journey in Web Development and IoT System</h3>
-                    <p>Hello! I'm Devapriya Paul Kundu, a developer passionate about connecting the digital and physical worlds. Currently pursuing my Diploma in Computer Science and Technology at Technique Polytechnic Institute (TPI), I have spent the last year refining my skills in Frontend Development, IoT, and Embedded Systems.</p>
+                    <p>Hello! I'm Devapriya Paul Kundu, a developer passionate about connecting the digital and physical worlds. Currently pursuing my Diploma in Computer Science and Technology at Technique Polytechnic Institute (TPI), I have spent the last year refining my skills in Full Stack Development, IoT, and Embedded Systems.</p>
                     <p>My journey is defined by hands-on creation. Over the course of 4+ major projects, I have explored diverse domains:</p>
                     <ul>
                         <li><strong>Web Development:</strong> I developed a Waste Food Management System Front-end to tackle food sustainability and I actively apply image recognition using OpenCV to build intelligent, problem-solving applications.</li>
@@ -108,11 +200,11 @@
                                 <p>Devapriya Paul Kundu</p>
                             </div>
                         </div>
-                        <div class="detail-item">
+                        <div class="detail-item email-detail">
                             <i class="fas fa-envelope"></i>
                             <div>
                                 <h4>Email</h4>
-                                <p>devapriya2006paul@gmail.com</p>
+                                <p class="email-line">devapriya2006paul@gmail.com</p>
                             </div>
                         </div>
                         <div class="detail-item">
@@ -129,21 +221,12 @@
                                 <p>Computer Science Engineering</p>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div class="about-stats">
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <h3>5+</h3>
-                            <p>Projects Completed</p>
-                        </div>
-                        <div class="stat-card">
-                            <h3>1+</h3>
-                            <p>Year Experience</p>
-                        </div>
-                        <div class="stat-card highlighted-stat">
-                            <h3>100%</h3>
-                            <p>Frontend Focus</p>
+                        <div class="detail-item">
+                            <i class="fas fa-briefcase"></i>
+                            <div>
+                                <h4>Experience</h4>
+                                <p>Front-End Intern @ SkillCraft Technology</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -174,11 +257,39 @@
                 <p class="section-subtitle">Some of my recent work</p>
             </div>
             <div class="projects-container">
+                <div class="project-card">
+                    <div class="project-image">
+                        <div class="project-image-content">
+                            <img src="WhatsApp Image 2026-08-10 at 9.09.04 PM.jpeg">
+                            <i class="fas fa-seedling project-fallback-icon"></i>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3>Localbasket Hyperlocal Farmer Market Portal</h3>
+                        <p>A full-stack hyperlocal farmer market portal designed to connect local farmers with nearby buyers, featuring a Node.js and Express.js backend, MongoDB data storage, and JWT authentication for secure user access.</p>
+                        <div class="project-tags">
+                            <span class="tag">Full Stack</span>
+                            <span class="tag">Node.js</span>
+                            <span class="tag">Express.js</span>
+                            <span class="tag">MongoDB</span>
+                            <span class="tag">JWT Authentication</span>
+                            <span class="tag">Responsive Design</span>
+                            <span class="tag">UI/UX</span>
+                            <span class="tag">Marketplace Portal</span>
+                        </div>
+                        <div class="project-action">
+                            <a href="https://github.com/Devapriya2006" target="_blank" rel="noopener" class="btn btn-primary">
+                                <i class="fab fa-github"></i> View on GitHub
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Modern Weather Forecast Project - NEW -->
                 <div class="project-card">
                     <div class="project-image">
                         <div class="project-image-content">
-                            <img src="https://images.unsplash.com/photo-1592210454359-9043f067919b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Modern Weather Forecast" class="project-image-real">
+                            <img src="https://images.unsplash.com/photo-1592210454359-9043f067919b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Modern Weather Forecast" class="project-image-real" data-custom="images/weather-forecast.jpg">
                             <i class="fas fa-cloud-sun project-fallback-icon"></i>
                         </div>
                     </div>
@@ -193,8 +304,8 @@
                             <span class="tag">Responsive Design</span>
                             <span class="tag">OpenWeatherMap</span>
                         </div>
-                        <div style="margin-top: 25px;">
-                            <a href="https://github.com/Devapriya2006/MODERN-WEATHER-FORECAST" target="_blank" class="btn btn-primary" style="padding: 12px 25px; font-size: 0.95rem;">
+                        <div class="project-action">
+                            <a href="https://github.com/Devapriya2006/MODERN-WEATHER-FORECAST" target="_blank" rel="noopener" class="btn btn-primary">
                                 <i class="fab fa-github"></i> View on GitHub
                             </a>
                         </div>
@@ -204,22 +315,29 @@
                 <div class="project-card">
                     <div class="project-image">
                         <div class="project-image-content">
-                            <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Modern Portfolio" class="project-image-real">
+                            <img src="Screenshot 2026-07-22 181827.png" alt="Modern Portfolio project preview">
                             <i class="fas fa-laptop-code project-fallback-icon"></i>
                         </div>
                     </div>
                     <div class="project-content">
-                        <h3>Modern Portfolio</h3>
-                        <p>A responsive personal portfolio website with modern animations and effects. Built with HTML, CSS, and JavaScript.</p>
+                        <h3>Modern Full Stack Portfolio</h3>
+                        <p>A full-stack personal portfolio website with modern animations and effects. Built with HTML, CSS, JavaScript, Node.js, Express.js, MongoDB, Nodemailer, input validation, and rate limiting for the contact backend.</p>
                         <div class="project-tags">
+                            <span class="tag">Full Stack</span>
                             <span class="tag">HTML5</span>
                             <span class="tag">CSS3</span>
                             <span class="tag">JavaScript</span>
+                            <span class="tag">Node.js</span>
+                            <span class="tag">Express.js</span>
+                            <span class="tag">MongoDB</span>
+                            <span class="tag">Nodemailer</span>
+                            <span class="tag">Validation</span>
+                            <span class="tag">Rate Limiting</span>
                             <span class="tag">Responsive Design</span>
                             <span class="tag">Animations</span>
                         </div>
-                        <div style="margin-top: 25px;">
-                            <a href="https://github.com/Devapriya2006/MODERN-PORTFOLIO" target="_blank" class="btn btn-primary" style="padding: 12px 25px; font-size: 0.95rem;">
+                        <div class="project-action">
+                            <a href="https://github.com/Devapriya2006/MODERN-PORTFOLIO" target="_blank" rel="noopener" class="btn btn-primary">
                                 <i class="fab fa-github"></i> View on GitHub
                             </a>
                         </div>
@@ -229,13 +347,13 @@
                 <div class="project-card">
                     <div class="project-image">
                         <div class="project-image-content">
-                            <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Waste Food Management System" class="project-image-real">
+                            <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Waste Food Management System" class="project-image-real" data-custom="images/waste-food-management.jpg">
                             <i class="fas fa-recycle project-fallback-icon"></i>
                         </div>
                     </div>
                     <div class="project-content">
                         <h3>Waste Food Management System</h3>
-                        <p>As Frontend Developer, built responsive interfaces for connecting restaurants with NGOs to reduce food waste. Implemented user dashboards, donation tracking, and real-time notifications.</p>
+                        <p>As Full Stack Developer, built responsive interfaces for connecting restaurants with NGOs to reduce food waste. Implemented user dashboards, donation tracking, and real-time notifications.</p>
                         <div class="project-tags">
                             <span class="tag">HTML</span>
                             <span class="tag">CSS</span>
@@ -250,7 +368,7 @@
                 <div class="project-card">
                     <div class="project-image">
                         <div class="project-image-content">
-                            <img src="https://images.unsplash.com/photo-1560253023-3ec5d502959f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="IoT Voice Control System" class="project-image-real">
+                            <img src="https://images.unsplash.com/photo-1560253023-3ec5d502959f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="IoT Voice Control System" class="project-image-real" data-custom="images/iot-voice-control.jpg">
                             <i class="fas fa-microchip project-fallback-icon"></i>
                         </div>
                     </div>
@@ -263,7 +381,7 @@
                             <span class="tag">Bluetooth HC-05</span>
                             <span class="tag">IEEE Boards</span>
                             <span class="tag">Embedded Systems</span>
-                            <span class="tag">Android App</span>
+
                         </div>
                     </div>
                 </div>
@@ -271,7 +389,7 @@
                 <div class="project-card">
                     <div class="project-image">
                         <div class="project-image-content">
-                            <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Image Recognition System" class="project-image-real">
+                            <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Image Recognition System" class="project-image-real" data-custom="images/image-recognition.jpg">
                             <i class="fas fa-eye project-fallback-icon"></i>
                         </div>
                     </div>
@@ -285,8 +403,8 @@
                             <span class="tag">Computer Vision</span>
                             <span class="tag">Image Processing</span>
                         </div>
-                        <div style="margin-top: 25px;">
-                            <a href="https://github.com/Devapriya2006/IMAGE-RECOGNIZATION-USING-OPEN-CV.git" target="_blank" class="btn btn-primary" style="padding: 12px 25px; font-size: 0.95rem;">
+                        <div class="project-action">
+                            <a href="https://github.com/Devapriya2006/IMAGE-RECOGNIZATION-USING-OPEN-CV.git" target="_blank" rel="noopener" class="btn btn-primary">
                                 <i class="fab fa-github"></i> View on GitHub
                             </a>
                         </div>
@@ -295,57 +413,332 @@
             </div>
         </div>
     </section>
- <!-- Social Links-->
-                    <div class="social-links">
-                        <a href="https://github.com/Devapriya2006" target="_blank" class="social-link" title="GitHub">
-                            <i class="fab fa-github"></i>
-                        </a>
-                        <a href="https://www.linkedin.com/in/devapriya-paul-kundu-0a1472343" target="_blank" class="social-link" title="LinkedIn">
-                            <i class="fab fa-linkedin"></i>
-                        </a>
-                        <a href="https://www.instagram.com/imdevapriyapaul" target="_blank" class="social-link" title="Instagram">
-                            <i class="fab fa-instagram"></i>
-                        </a>
-                        <a href="https://www.facebook.com/share/1DL6Y1rC8x/" target="_blank" class="social-link" title="Facebook">
-                            <i class="fab fa-facebook"></i>
-                        </a>
+
+    <!-- Experience Timeline -->
+    <section class="experience section-padding" id="experience">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Experience</h2>
+                <div class="underline"></div>
+                <p class="section-subtitle">The path that got me here</p>
+            </div>
+            <div class="timeline" id="timeline">
+                <div class="timeline-track" aria-hidden="true"></div>
+                <div class="timeline-item">
+                    <div class="timeline-icon"><i class="fas fa-graduation-cap"></i></div>
+                    <div class="timeline-card">
+                        <span class="timeline-eyebrow">Foundation</span>
+                        <h3>Started Diploma in CST</h3>
+                        <p>Began Computer Science &amp; Technology at Technique Polytechnic Institute (TPI), building a real foundation in programming and web development.</p>
                     </div>
                 </div>
-                
-               <!-- Simple Contact Form -->
-<div class="contact-box">
-    <div class="contact-box-content">
-        <h3><i class="fas fa-paper-plane"></i> Send Me a Message</h3>
-        <p>Fill out the form below and I'll get back to you soon!</p>
-        
-        <form action="#" method="POST" class="contact-form">
-            <div class="form-group">
-                <input type="text" name="name" placeholder="Your Name" required>
+                <div class="timeline-item">
+                    <div class="timeline-icon"><i class="fas fa-hammer"></i></div>
+                    <div class="timeline-card">
+                        <span class="timeline-eyebrow">Hands-on Building</span>
+                        <h3>4+ Major Projects</h3>
+                        <p>Built web and IoT projects spanning full stack development, computer vision, and embedded systems.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-icon"><i class="fas fa-briefcase"></i></div>
+                    <div class="timeline-card">
+                        <span class="timeline-eyebrow">Internship</span>
+                        <h3>SkillCraft Technology</h3>
+                        <p>Completed a Front-End Development internship, sharpening real-world coding and collaboration skills.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-icon"><i class="fas fa-bolt"></i></div>
+                    <div class="timeline-card">
+                        <span class="timeline-eyebrow">Hackathon</span>
+                        <h3>Hack Technique 2026</h3>
+                        <p>Competed in a hands-on hackathon, solving problems under pressure alongside fellow developers.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-icon"><i class="fas fa-rocket"></i></div>
+                    <div class="timeline-card">
+                        <span class="timeline-eyebrow">Present</span>
+                        <h3>Open Source &amp; Personal Projects</h3>
+                        <p>Actively building, deploying, and contributing to real-world solutions.</p>
+                    </div>
+                </div>
             </div>
-            
-            <div class="form-group">
-                <input type="email" name="email" placeholder="Your Email" required>
-            </div>
-            
-            <div class="form-group">
-                <input type="text" name="subject" placeholder="Subject">
-            </div>
-            
-            <div class="form-group">
-                <textarea name="message" rows="5" placeholder="Your Message..." required></textarea>
-            </div>
-            
-            <button type="submit" class="submit-btn">
-                <i class="fas fa-paper-plane"></i> Send Message
-            </button>
-        </form>
-        
-        <div class="contact-hours">
-            <h4><i class="fas fa-clock"></i> Response Time</h4>
-            <p>I typically respond within 24 hours</p>
         </div>
-    </div>
-</div>
+    </section>
+
+    <!-- Certificates Section -->
+    <section class="certificates section-padding" id="certificates">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Certificates</h2>
+                <div class="underline"></div>
+                <p class="section-subtitle">Credentials that back the skills above</p>
+            </div>
+            <!--
+                Auto-detect, same pattern as the project images above:
+                drop files named certificate-1.jpg ... certificate-4.jpg into an
+                "images/certificates" folder next to index.html and each card below
+                will automatically swap from a placeholder to your real certificate.
+            -->
+            <div class="certificates-grid">
+                <div class="cert-card">
+                    <div class="cert-image">
+                        <img class="cert-image-real" data-custom="HACKTECHNIQUE.jpeg" alt="Certificate 1">
+                        <div class="cert-placeholder">
+                            <i class="fas fa-certificate"></i>
+                            <span>Add Certificate</span>
+                        </div>
+                    </div>
+                    <p class="cert-caption">🏅 Certificate of Participation Hack Technique 2026</p>
+                </div>
+                <div class="cert-card">
+                    <div class="cert-image">
+                        <img class="cert-image-real" data-custom="WEBDEVELOPMENTCERTIFICATE.jpeg" alt="Certificate 2">
+                        <div class="cert-placeholder">
+                            <i class="fas fa-certificate"></i>
+                            <span>Add Certificate</span>
+                        </div>
+                    </div>
+                    <p class="cert-caption">Web Development Internship Completion Certificate</p>
+                </div>
+                <div class="cert-card">
+                    <div class="cert-image">
+                        <img class="cert-image-real" data-custom="AIMLCERTIFICATE.jpeg" alt="Certificate 3">
+                        <div class="cert-placeholder">
+                            <i class="fas fa-certificate"></i>
+                            <span>Add Certificate</span>
+                        </div>
+                    </div>
+                    <p class="cert-caption">Successfully Completed AI & Machine Learning Training</p>
+                </div>
+                <div class="cert-card">
+                    <div class="cert-image">
+                        <img class="cert-image-real" data-custom="CMSOCERTIFICATE.jpeg" alt="Certificate 4">
+                        <div class="cert-placeholder">
+                            <i class="fas fa-certificate"></i>
+                            <span>Add Certificate</span>
+                        </div>
+                    </div>
+                    <p class="cert-caption">🏆 Certificate in MS Office (CMSO)</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- College Life Photo Collection Section -->
+    <section class="college-life section-padding" id="college-life">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">College Life Photo Collection</h2>
+                <div class="underline"></div>
+                <p class="section-subtitle">Moments from campus, friends, and memories</p>
+            </div>
+            <div class="college-life-marquee" aria-label="College life photo collection">
+                <div class="college-life-track">
+                    <div class="college-photo-card">
+                        <div class="college-photo-frame">
+                            <img class="college-photo-real" data-custom="WhatsApp Image 2026-08-10 at 8.57.22 PM.jpeg" alt="Recent campus photo 1">
+                            <div class="college-photo-placeholder">
+                                <i class="fas fa-camera-retro"></i>
+                                <span>Add Photo</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="college-photo-card">
+                        <div class="college-photo-frame">
+                            <img class="college-photo-real" data-custom="WhatsApp Image 2026-08-10 at 8.58.20 PM.jpeg" alt="Recent campus photo 2">
+                            <div class="college-photo-placeholder">
+                                <i class="fas fa-camera-retro"></i>
+                                <span>Add Photo</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="college-photo-card">
+                        <div class="college-photo-frame">
+                            <img class="college-photo-real" data-custom="WhatsApp Image 2026-08-10 at 8.58.21 PM.jpeg" alt="Recent campus photo 3">
+                            <div class="college-photo-placeholder">
+                                <i class="fas fa-camera-retro"></i>
+                                <span>Add Photo</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="college-photo-card">
+                        <div class="college-photo-frame">
+                            <img class="college-photo-real" data-custom="WhatsApp Image 2026-08-10 at 8.58.23 PM.jpeg" alt="Recent campus photo 4">
+                            <div class="college-photo-placeholder">
+                                <i class="fas fa-camera-retro"></i>
+                                <span>Add Photo</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="college-photo-card">
+                        <div class="college-photo-frame">
+                            <img class="college-photo-real" data-custom="WhatsApp Image 2026-08-10 at 8.58.49 PM.jpeg" alt="Recent campus photo 5">
+                            <div class="college-photo-placeholder">
+                                <i class="fas fa-camera-retro"></i>
+                                <span>Add Photo</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="college-photo-card">
+                        <div class="college-photo-frame">
+                            <img class="college-photo-real" data-custom="WhatsApp Image 2026-08-10 at 8.59.04 PM.jpeg" alt="Recent campus photo 6">
+                            <div class="college-photo-placeholder">
+                                <i class="fas fa-camera-retro"></i>
+                                <span>Add Photo</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="college-photo-card">
+                        <div class="college-photo-frame">
+                            <img class="college-photo-real" data-custom="WhatsApp Image 2026-08-10 at 9.09.38 PM.jpeg" alt="Recent campus photo 7">
+                            <div class="college-photo-placeholder">
+                                <i class="fas fa-camera-retro"></i>
+                                <span>Add Photo</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="college-photo-card">
+                        <div class="college-photo-frame">
+                            <img class="college-photo-real" data-custom="WhatsApp Image 2026-08-10 at 9.10.03 PM.jpeg" alt="Recent campus photo 8">
+                            <div class="college-photo-placeholder">
+                                <i class="fas fa-camera-retro"></i>
+                                <span>Add Photo</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services section-padding" id="services">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Services</h2>
+                <div class="underline"></div>
+                <p class="section-subtitle">What I can build for you</p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon"><i class="fas fa-laptop-code"></i></div>
+                    <h3>Full Stack Development</h3>
+                    <p>End-to-end web apps built on the MERN stack — from database schema to a polished, working UI.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon"><i class="fas fa-display"></i></div>
+                    <h3>Responsive Design</h3>
+                    <p>Interfaces that hold up cleanly on any screen, from a small phone to a wide desktop monitor.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon"><i class="fas fa-pen-ruler"></i></div>
+                    <h3>UI/UX Design</h3>
+                    <p>Layouts and flows designed around what the user actually needs to do on the page.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon"><i class="fas fa-briefcase"></i></div>
+                    <h3>Portfolio Development</h3>
+                    <p>Personal portfolio sites that present your projects and skills the way this one does.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact section-padding" id="contact">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Contact Me</h2>
+                <div class="underline"></div>
+                <p class="section-subtitle">Let's build something useful together</p>
+            </div>
+
+            <div class="contact-content">
+                <div class="contact-box">
+                    <div class="contact-box-content">
+                        <h3><i class="fas fa-address-card"></i> Get in Touch</h3>
+                        <p>I am open to internships, project collaborations, and full stack or IoT opportunities.</p>
+
+                        <div class="about-details contact-details">
+                            <div class="detail-item email-detail">
+                                <i class="fas fa-envelope"></i>
+                                <div>
+                                    <h4>Email</h4>
+                                    <p class="email-line">devapriya2006paul@gmail.com</p>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-phone"></i>
+                                <div>
+                                    <h4>Phone</h4>
+                                    <p>+91 9832341502</p>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <div>
+                                    <h4>Location</h4>
+                                    <p>Khanakul, West Bengal, India</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="social-links">
+                            <a href="https://github.com/Devapriya2006" target="_blank" rel="noopener" class="social-link" title="GitHub" aria-label="GitHub">
+                                <i class="fab fa-github"></i>
+                            </a>
+                            <a href="https://www.linkedin.com/in/devapriya-paul-kundu-0a1472343" target="_blank" rel="noopener" class="social-link" title="LinkedIn" aria-label="LinkedIn">
+                                <i class="fab fa-linkedin"></i>
+                            </a>
+                            <a href="https://www.instagram.com/imdevapriyapaul" target="_blank" rel="noopener" class="social-link" title="Instagram" aria-label="Instagram">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="https://www.facebook.com/share/1DL6Y1rC8x/" target="_blank" rel="noopener" class="social-link" title="Facebook" aria-label="Facebook">
+                                <i class="fab fa-facebook"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="contact-box">
+                    <div class="contact-box-content">
+                        <h3><i class="fas fa-paper-plane"></i> Send Me a Message</h3>
+                        <p>Fill out the form below and I'll get back to you soon!</p>
+
+                        <form action="#" method="POST" class="contact-form">
+                            <div class="form-group">
+                                <input type="text" name="name" placeholder="Your Name" required>
+                            </div>
+
+                            <div class="form-group">
+                                <input type="email" name="email" placeholder="Your Email" required>
+                            </div>
+
+                            <div class="form-group">
+                                <input type="text" name="subject" placeholder="Subject">
+                            </div>
+
+                            <div class="form-group">
+                                <textarea name="message" rows="5" placeholder="Your Message..." required></textarea>
+                            </div>
+
+                            <button type="submit" class="submit-btn">
+                                <i class="fas fa-paper-plane"></i> Send Message
+                            </button>
+                        </form>
+
+                        <div class="contact-hours">
+                            <h4><i class="fas fa-clock"></i> Response Time</h4>
+                            <p>I typically respond within 24 hours</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- Footer -->
     <footer class="footer">
@@ -353,18 +746,20 @@
             <div class="footer-content">
                 <div class="footer-logo">
                     <h2>DEVAPRIYA PAUL KUNDU</h2>
-                    <p>Frontend Developer & IoT Enthusiast</p>
+                    <p>Full Stack Developer & IoT Enthusiast</p>
                 </div>
                 <div class="footer-links">
                     <a href="#home">Home</a>
                     <a href="#about">About</a>
                     <a href="#skills">Skills</a>
                     <a href="#projects">Projects</a>
+                    <a href="#experience">Experience</a>
+                    <a href="#services">Services</a>
                     <a href="#contact">Contact</a>
                 </div>
                 <div class="copyright">
                     <p>&copy; <span id="currentYear"></span> Devapriya Paul Kundu. All rights reserved.</p>
-                    <p style="margin-top: 10px; font-size: 0.9rem; font-weight: 600; color: #8b5cf6; letter-spacing: 0.5px;">
+                    <p class="footer-credit">
                         Made by Mr Developer DPK
                     </p>
                 </div>
@@ -373,15 +768,20 @@
     </footer>
 
     <!-- Back to Top Button -->
-    <button class="back-to-top" id="backToTop">
+    <button class="back-to-top" id="backToTop" type="button" aria-label="Back to top" title="Back to top">
         <i class="fas fa-arrow-up"></i>
     </button>
 
     <!-- Hidden CV Fallback -->
-    <a id="cvFallback" style="display: none;"></a>
+    <a id="cvFallback" class="hidden-cv-fallback"></a>
 
-    <!-- Particles.js CDN -->
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        window.PORTFOLIO_BACKEND_URL = '/api/contact';
+    </script>
+
+    <!-- Three.js 3D Background -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="three-bg.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

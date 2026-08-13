@@ -1,6 +1,6 @@
 // Modern script.js with profile photo fix and contact form handling
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Modern Portfolio Website Loaded Successfully! 🚀');
+    console.log('Modern Portfolio Website Loaded Successfully!');
     
     // Initialize loading screen
     const loadingScreen = document.querySelector('.loading-screen');
@@ -12,6 +12,47 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 500);
         }, 1000);
     }
+
+    // Custom background image loader
+    // To use YOUR OWN background image: just add a file named "background.jpg"
+    // (or .jpeg / .png) into an "images" folder next to index.html.
+    // It will be detected automatically — no code changes needed.
+    // If no custom file is found, the site keeps its default animated background.
+    (function loadCustomBackground() {
+        const bgLayer = document.getElementById('custom-bg');
+        if (!bgLayer) return;
+
+        const candidatePaths = [
+            'images/background.jpg',
+            'images/background.jpeg',
+            'images/background.png',
+            'background.jpg',
+            'background.jpeg',
+            'background.png',
+            'assets/background.jpg',
+            'assets/background.jpeg',
+            'assets/background.png'
+        ];
+
+        tryPath(0);
+
+        function tryPath(index) {
+            if (index >= candidatePaths.length) {
+                return; // no custom background image found — keep default look
+            }
+            const testImage = new Image();
+            testImage.src = candidatePaths[index] + '?' + new Date().getTime();
+            testImage.onload = function () {
+                bgLayer.style.backgroundImage = `url('${candidatePaths[index]}')`;
+                bgLayer.classList.add('has-image');
+                document.body.classList.add('custom-bg-active');
+                console.log('Custom background loaded from:', candidatePaths[index]);
+            };
+            testImage.onerror = function () {
+                tryPath(index + 1);
+            };
+        }
+    })();
 
     // Navigation functionality
     const hamburger = document.querySelector('.hamburger');
@@ -38,36 +79,47 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Navbar scroll effect
-    if (navbar) {
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
-            }
+    // Navbar scroll effect + active section highlighting
+    // Combined into one rAF-throttled, passive scroll handler so scrolling
+    // never forces a synchronous layout read on every tick.
+    const sections = document.querySelectorAll('section');
+    let sectionOffsets = [];
+
+    function cacheSectionOffsets() {
+        sectionOffsets = Array.from(sections).map(section => ({
+            id: section.getAttribute('id'),
+            top: section.offsetTop
+        }));
+    }
+    cacheSectionOffsets();
+    window.addEventListener('resize', cacheSectionOffsets, { passive: true });
+
+    let scrollTicking = false;
+    function handleScroll() {
+        const y = window.scrollY;
+
+        if (navbar) {
+            navbar.classList.toggle('scrolled', y > 50);
+        }
+
+        let current = '';
+        for (const s of sectionOffsets) {
+            if (y >= s.top - 200) current = s.id;
+        }
+        navLinks.forEach(link => {
+            const isActive = link.getAttribute('href').substring(1) === current;
+            link.classList.toggle('active', isActive);
         });
+
+        scrollTicking = false;
     }
 
-    // Active section highlighting
-    const sections = document.querySelectorAll('section');
     window.addEventListener('scroll', () => {
-        let current = '';
-        sections.forEach(section => {
-            const sectionTop = section.offsetTop;
-            const sectionHeight = section.clientHeight;
-            if (scrollY >= (sectionTop - 200)) {
-                current = section.getAttribute('id');
-            }
-        });
-
-        navLinks.forEach(link => {
-            link.classList.remove('active');
-            if (link.getAttribute('href').substring(1) === current) {
-                link.classList.add('active');
-            }
-        });
-    });
+        if (!scrollTicking) {
+            requestAnimationFrame(handleScroll);
+            scrollTicking = true;
+        }
+    }, { passive: true });
 
     // =============================================
     // PROFILE PHOTO FIX - MULTI-LAYER FALLBACK SYSTEM
@@ -75,22 +127,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const profilePhoto = document.getElementById('profilePhoto');
     const avatarInitials = document.getElementById('avatarInitials');
     
-    // Array of reliable backup images (all from Unsplash CDN)
     const backupImages = [
         'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
         'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
         'https://images.unsplash.com/photo-1499996860823-5214fcc65f8f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
-        'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
-        'https://images.unsplash.com/photo-1566492031773-4f4e71fc6c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
+        'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
     ];
     
-    // Function to set profile photo with fallback
     if (profilePhoto) {
         let retryCount = 0;
         const maxRetries = 3;
         
         function setProfilePhotoWithFallback() {
-            // Try local photo paths in order
             const localPaths = [
                 'DEVAPRIYA.jpeg?' + new Date().getTime(),
                 'devapriya.jpeg?' + new Date().getTime(),
@@ -112,7 +160,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 localPhoto.src = localPaths[index];
                 
                 localPhoto.onload = function() {
-                    console.log('✅ Personal photo loaded successfully from:', localPaths[index]);
+                    console.log('Personal photo loaded successfully from:', localPaths[index]);
                     profilePhoto.src = localPhoto.src;
                     profilePhoto.style.display = 'block';
                     if (avatarInitials) {
@@ -121,11 +169,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 };
                 
                 localPhoto.onerror = function() {
-                    console.log('❌ Failed to load from:', localPaths[index]);
+                    console.log('Failed to load from:', localPaths[index]);
                     tryLocalPath(index + 1);
                 };
                 
-                // Timeout for slow loading
                 setTimeout(() => {
                     if (profilePhoto.naturalHeight === 0) {
                         tryLocalPath(index + 1);
@@ -135,65 +182,19 @@ document.addEventListener('DOMContentLoaded', function() {
             
             function useFallbackImage() {
                 retryCount++;
-                console.log(`🔄 Using fallback image (attempt ${retryCount}/${maxRetries})`);
-                
-                // Pick a random backup image
                 const randomIndex = Math.floor(Math.random() * backupImages.length);
                 profilePhoto.src = backupImages[randomIndex];
                 profilePhoto.style.display = 'block';
                 
-                // Show initials over the backup image
                 if (avatarInitials) {
                     avatarInitials.style.display = 'flex';
                     avatarInitials.style.background = 'rgba(99, 102, 241, 0.8)';
                     avatarInitials.style.backdropFilter = 'blur(5px)';
                 }
-                
-                // Store that we're using a fallback
-                localStorage.setItem('usingFallbackPhoto', 'true');
             }
         }
         
         setProfilePhotoWithFallback();
-    } else {
-        console.warn('Profile photo element not found');
-    }
-
-    // Initialize Particles.js for background
-    if (typeof particlesJS !== 'undefined' && document.getElementById('particles-js')) {
-        particlesJS('particles-js', {
-            particles: {
-                number: { value: 60, density: { enable: true, value_area: 800 } },
-                color: { value: "#6366f1" },
-                shape: { type: "circle" },
-                opacity: { value: 0.2, random: true },
-                size: { value: 3, random: true },
-                line_linked: {
-                    enable: true,
-                    distance: 150,
-                    color: "#6366f1",
-                    opacity: 0.1,
-                    width: 1
-                },
-                move: {
-                    enable: true,
-                    speed: 2,
-                    direction: "none",
-                    random: true,
-                    straight: false,
-                    out_mode: "out",
-                    bounce: false
-                }
-            },
-            interactivity: {
-                detect_on: "canvas",
-                events: {
-                    onhover: { enable: true, mode: "repulse" },
-                    onclick: { enable: true, mode: "push" }
-                }
-            },
-            retina_detect: true
-        });
     }
 
     // Back to top button
@@ -206,7 +207,7 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 backToTopButton.classList.remove('visible');
             }
-        });
+        }, { passive: true });
         
         backToTopButton.addEventListener('click', () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -219,68 +220,72 @@ document.addEventListener('DOMContentLoaded', function() {
         currentYearSpan.textContent = new Date().getFullYear();
     }
     
-    // Skills data
-    const skills = [
-        { 
-            icon: 'fab fa-html5', 
-            name: 'HTML5', 
-            description: 'Semantic markup, accessibility, modern HTML features, SEO optimization',
-            progress: 50
+    // Skills data, grouped by category
+    const skillCategories = [
+        {
+            name: 'Frontend',
+            icon: 'fas fa-laptop-code',
+            skills: [
+                { name: 'HTML5', progress: 50 },
+                { name: 'CSS3', progress: 30 },
+                { name: 'JavaScript', progress: 30 },
+                { name: 'Responsive Design', progress: 55 }
+            ]
         },
-        { 
-            icon: 'fab fa-css3-alt', 
-            name: 'CSS3', 
-            description: 'Responsive design, CSS Grid, Flexbox, animations, transitions, variables',
-            progress: 30
+        {
+            name: 'Backend',
+            icon: 'fas fa-server',
+            skills: [
+                { name: 'Node.js', progress: 45 },
+                { name: 'Express.js', progress: 45 }
+            ]
         },
-        { 
-            icon: 'fab fa-js-square', 
-            name: 'JavaScript', 
-            description: 'ES6+, DOM manipulation, APIs, asynchronous programming, event handling',
-            progress: 30
+        {
+            name: 'Database',
+            icon: 'fas fa-database',
+            skills: [
+                { name: 'MongoDB', progress: 40 }
+            ]
         },
-        { 
-            icon: 'fas fa-mobile-alt', 
-            name: 'Responsive Design', 
-            description: 'Mobile-first approach, cross-browser compatibility, media queries',
-            progress: 55
-        },
-        { 
-            icon: 'fas fa-microchip', 
-            name: 'IoT & Embedded Systems', 
-            description: 'Arduino Uno, Bluetooth HC-05, IEEE boards, sensor integration, hardware programming',
-            progress: 75
-        },
-        { 
-            icon: 'fas fa-camera', 
-            name: 'OpenCV Basics', 
-            description: 'Image processing, face recognition, computer vision fundamentals with Python',
-            progress: 70
+        {
+            name: 'Tools & Systems',
+            icon: 'fas fa-microchip',
+            skills: [
+                { name: 'IoT & Embedded Systems', progress: 75 },
+                { name: 'OpenCV Basics', progress: 70 },
+                { name: 'Git & GitHub', progress: 60 }
+            ]
         }
     ];
-    
-    // Populate skills section
+
+    // Populate skills section as categorized glass cards
     const skillsContainer = document.querySelector('.skills-container');
     if (skillsContainer) {
-        skillsContainer.innerHTML = ''; // Clear existing content
-        skills.forEach(skill => {
-            const skillCard = document.createElement('div');
-            skillCard.className = 'skill-card';
-            skillCard.innerHTML = `
-                <i class="${skill.icon} skill-icon"></i>
-                <h3>${skill.name}</h3>
-                <p>${skill.description}</p>
-                <div class="skill-progress">
+        skillsContainer.innerHTML = '';
+        skillCategories.forEach(category => {
+            const card = document.createElement('div');
+            card.className = 'skill-category-card';
+
+            const rows = category.skills.map(skill => `
+                <div class="skill-row">
+                    <div class="skill-row-top">
+                        <span class="skill-row-name">${skill.name}</span>
+                        <span class="skill-row-percentage">${skill.progress}%</span>
+                    </div>
                     <div class="progress-bar">
                         <div class="progress-fill" data-progress="${skill.progress}" style="width: 0%"></div>
                     </div>
-                    <div style="display: flex; justify-content: space-between; margin-top: 5px;">
-                        <span class="progress-percentage">0%</span>
-                        <span>${skill.progress}%</span>
-                    </div>
                 </div>
+            `).join('');
+
+            card.innerHTML = `
+                <div class="skill-category-title">
+                    <i class="${category.icon}"></i>
+                    <h3>${category.name}</h3>
+                </div>
+                ${rows}
             `;
-            skillsContainer.appendChild(skillCard);
+            skillsContainer.appendChild(card);
         });
     }
 
@@ -292,11 +297,9 @@ document.addEventListener('DOMContentLoaded', function() {
         progressBars.forEach((bar, index) => {
             const progress = bar.getAttribute('data-progress');
             if (progress) {
-                // Animate width
                 bar.style.transition = 'width 1.5s ease-out';
                 bar.style.width = `${progress}%`;
                 
-                // Animate percentage text if exists
                 if (progressPercentages[index]) {
                     let currentProgress = 0;
                     const targetProgress = parseInt(progress);
@@ -321,7 +324,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Notification system
     function showNotification(message, type = 'success') {
-        // Remove existing notifications
         document.querySelectorAll('.notification').forEach(n => n.remove());
         
         const notification = document.createElement('div');
@@ -332,7 +334,6 @@ document.addEventListener('DOMContentLoaded', function() {
             <button class="notification-close"><i class="fas fa-times"></i></button>
         `;
         
-        // Add styles if not in CSS
         notification.style.cssText = `
             position: fixed;
             top: 100px;
@@ -353,28 +354,18 @@ document.addEventListener('DOMContentLoaded', function() {
         
         document.body.appendChild(notification);
         
-        // Close button functionality
         const closeBtn = notification.querySelector('.notification-close');
         if (closeBtn) {
             closeBtn.style.cssText = `
-                background: none;
-                border: none;
-                color: white;
-                cursor: pointer;
-                padding: 5px;
-                margin-left: auto;
-                opacity: 0.8;
-                transition: opacity 0.3s;
+                background: none; border: none; color: white; cursor: pointer;
+                padding: 5px; margin-left: auto; opacity: 0.8; transition: opacity 0.3s;
             `;
-            closeBtn.addEventListener('mouseenter', () => closeBtn.style.opacity = '1');
-            closeBtn.addEventListener('mouseleave', () => closeBtn.style.opacity = '0.8');
             closeBtn.addEventListener('click', () => {
                 notification.style.animation = 'slideOut 0.3s ease forwards';
                 setTimeout(() => notification.remove(), 300);
             });
         }
         
-        // Auto remove after 5 seconds
         setTimeout(() => {
             if (notification.parentNode) {
                 notification.style.animation = 'slideOut 0.3s ease forwards';
@@ -383,69 +374,89 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 5000);
     }
     
-    // Handle form submission
+    // =============================================
+    // BACKEND API URL
+    // Local development: http://localhost:5000/api/contact
+    // Same-origin deploy: /api/contact
+    // Custom deploy: set window.PORTFOLIO_BACKEND_URL before loading this script
+    // =============================================
+    const BACKEND_URL =
+        window.PORTFOLIO_BACKEND_URL ||
+        (window.location.protocol === 'file:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:5000/api/contact'
+            : '/api/contact');
+
     if (contactForm) {
-        contactForm.addEventListener('submit', function(e) {
+        contactForm.addEventListener('submit', async function(e) {
             e.preventDefault();
-            
-            // Get form data
+
+            // Collect form values
             const formData = {
-                name: contactForm.querySelector('input[name="name"]')?.value || '',
-                email: contactForm.querySelector('input[name="email"]')?.value || '',
-                subject: contactForm.querySelector('input[name="subject"]')?.value || 'Portfolio Contact',
-                message: contactForm.querySelector('textarea[name="message"]')?.value || ''
+                name:    contactForm.querySelector('input[name="name"]')?.value.trim()       || '',
+                email:   contactForm.querySelector('input[name="email"]')?.value.trim()      || '',
+                subject: contactForm.querySelector('input[name="subject"]')?.value.trim()    || 'Portfolio Contact',
+                message: contactForm.querySelector('textarea[name="message"]')?.value.trim() || ''
             };
-            
-            // Validate form
+
+            // Front-end validation (backend validates again server-side)
             if (!formData.name || !formData.email || !formData.message) {
                 showNotification('Please fill in all required fields!', 'error');
                 return;
             }
-            
-            // Validate email
+            if (formData.name.length < 2) {
+                showNotification('Name must be at least 2 characters.', 'error');
+                return;
+            }
+            if (formData.message.length < 10) {
+                showNotification('Message must be at least 10 characters.', 'error');
+                return;
+            }
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(formData.email)) {
                 showNotification('Please enter a valid email address!', 'error');
                 return;
             }
-            
-            // Show loading state
+
+            // Show loading state on button
             const submitBtn = contactForm.querySelector('.submit-btn');
             const originalBtnText = submitBtn.innerHTML;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
             submitBtn.disabled = true;
-            
-            // Save to localStorage for demo
-            setTimeout(() => {
-                const messages = JSON.parse(localStorage.getItem('contactMessages') || '[]');
-                messages.push({
-                    ...formData,
-                    timestamp: new Date().toISOString()
+
+            try {
+                const response = await fetch(BACKEND_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
                 });
-                localStorage.setItem('contactMessages', JSON.stringify(messages));
-                
-                // Open default email client
-                const mailtoLink = `mailto:devapriya2006paul@gmail.com?subject=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(
-                    `Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`
-                )}`;
-                
-                showNotification('Opening your email client to send the message.', 'info');
-                
-                setTimeout(() => {
-                    window.location.href = mailtoLink;
-                }, 1500);
-                
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showNotification(result.message || 'Message sent successfully!', 'success');
+                    contactForm.reset();
+                } else {
+                    // Show first validation error if available
+                    const errMsg = result.errors?.[0]?.message || result.message || 'Something went wrong.';
+                    showNotification(errMsg, 'error');
+                }
+            } catch (err) {
+                console.error('Contact form error:', err);
+                showNotification(
+                    'Could not reach the server. Is the backend running?',
+                    'error'
+                );
+            } finally {
                 submitBtn.innerHTML = originalBtnText;
                 submitBtn.disabled = false;
-                contactForm.reset();
-            }, 1000);
+            }
         });
     }
     
     // Typewriter effect
     const professionElement = document.querySelector('.profession');
     if (professionElement) {
-        const professions = ['Frontend Developer', 'IoT Developer', 'Web Developer', 'Problem Solver'];
+        const professions = ['Full Stack Developer', 'IoT Developer', 'Web Developer', 'Problem Solver'];
         let professionIndex = 0;
         let charIndex = 0;
         let isDeleting = false;
@@ -483,16 +494,16 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(typeWriter, 1000);
     }
     
-    // CV Download functionality
-    const cvDownloadBtn = document.getElementById('cvDownloadBtn');
+    // CV Download functionality (nav button + About section resume button)
+    const cvDownloadBtns = document.querySelectorAll('.cv-download-trigger');
     const cvFallback = document.getElementById('cvFallback');
     
-    if (cvDownloadBtn) {
+    cvDownloadBtns.forEach(cvDownloadBtn => {
         cvDownloadBtn.addEventListener('click', function(e) {
-            // Create CV content as fallback
             const cvContent = `
+================================================
 DEVAPRIYA PAUL KUNDU
-Frontend & IoT Developer
+Full Stack & IoT Developer
 ================================================
 
 CONTACT INFORMATION:
@@ -501,54 +512,27 @@ Phone: +91 9832341502
 Location: Khanakul, West Bengal, India
 
 PROFESSIONAL SUMMARY:
-Passionate Frontend Developer with 1+ year of experience in creating responsive and user-friendly web applications. Specialized in HTML, CSS, and JavaScript. Experienced in working on real-world projects including a Waste Food Management System and IoT-based Voice Control Automation System with Arduino and Bluetooth.
+Passionate Full Stack Developer with 1+ year of experience in creating responsive
+and user-friendly web applications. Specialised in HTML, CSS, JavaScript, Node.js,
+Express.js, and MongoDB. Experienced in IoT-based Voice Control Automation and
+Computer Vision projects.
 
 TECHNICAL SKILLS:
-• Frontend: HTML5, CSS3, JavaScript, Responsive Design
-• IoT & Embedded Systems: Arduino Uno, Bluetooth HC-05, IEEE Boards, Sensor Integration
-• Tools: Git, VS Code, Chrome DevTools, Arduino IDE
-• Other: OpenCV Basics, Computer Vision Fundamentals
-
-PROJECT EXPERIENCE:
-
-1. Modern Weather Forecast
-   - Real-time weather application with API integration
-   - 5-day forecast, location search, dynamic UI updates
-   - Technologies: HTML5, CSS3, JavaScript, OpenWeatherMap API
-
-2. Modern Portfolio Website
-   - Responsive portfolio with modern animations and effects
-   - Implemented smooth transitions, particle backgrounds
-   - Technologies: HTML5, CSS3, JavaScript, Particles.js
-
-3. Waste Food Management System
-   - Frontend interfaces for connecting restaurants with NGOs
-   - Responsive dashboards for food donation management
-   - Technologies: HTML, CSS, JavaScript, Firebase
-
-4. IoT Voice Control Automation System
-   - IoT-based home automation using Arduino Uno
-   - Bluetooth HC-05 module for wireless device control
-   - Technologies: Arduino Uno, Bluetooth HC-05, C++
-
-5. Image Recognition System
-   - Computer vision algorithms using OpenCV
-   - Web interface for image processing
-   - Technologies: Python, OpenCV, Flask
+- Frontend: HTML5, CSS3, JavaScript, Responsive Design
+- Backend: Node.js, Express.js, MongoDB
+- IoT & Embedded Systems: Arduino Uno, Bluetooth HC-05, IEEE Boards
+- Tools: Git, VS Code, Chrome DevTools, Arduino IDE
+- Other: OpenCV Basics, Computer Vision Fundamentals
 
 EDUCATION:
 Computer Science Engineering
 Technique Polytechnic Institute (TPI)
 
 ================================================
-This CV was generated from my portfolio website.
 Last updated: ${new Date().toLocaleDateString()}
             `;
             
-            // Try to download PDF first
             const pdfUrl = 'DEVAPRIYA CV (1).pdf';
-            
-            // Create hidden iframe to test PDF availability
             const testFrame = document.createElement('iframe');
             testFrame.style.display = 'none';
             testFrame.onload = function() {
@@ -559,7 +543,6 @@ Last updated: ${new Date().toLocaleDateString()}
             };
             testFrame.onerror = function() {
                 document.body.removeChild(testFrame);
-                // PDF doesn't exist, use fallback
                 e.preventDefault();
                 if (cvFallback) {
                     cvFallback.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(cvContent);
@@ -571,12 +554,29 @@ Last updated: ${new Date().toLocaleDateString()}
             testFrame.src = pdfUrl;
             document.body.appendChild(testFrame);
         });
-    }
+    });
     
     // Project images fallback handling
     window.addEventListener('load', function() {
         const projectImages = document.querySelectorAll('.project-image-real');
         const fallbackIcons = document.querySelectorAll('.project-fallback-icon');
+
+        // Custom project pictures
+        // Each project image has a data-custom="images/your-file.jpg" attribute in index.html.
+        // Add a matching image file into an "images" folder next to index.html and it will
+        // automatically replace the default stock photo for that project — no code changes needed.
+        projectImages.forEach((img) => {
+            const customSrc = img.getAttribute('data-custom');
+            if (!customSrc) return;
+
+            const customImage = new Image();
+            customImage.src = customSrc + '?' + new Date().getTime();
+            customImage.onload = function () {
+                img.src = customImage.src;
+                console.log('Custom project image loaded from:', customSrc);
+            };
+            // If the custom file isn't there, silently keep the existing default image.
+        });
         
         projectImages.forEach((img, index) => {
             if (img) {
@@ -587,7 +587,6 @@ Last updated: ${new Date().toLocaleDateString()}
                     }
                 };
                 
-                // Check if image loaded successfully
                 if (img.complete && img.naturalHeight === 0) {
                     img.style.display = 'none';
                     if (fallbackIcons[index]) {
@@ -608,9 +607,14 @@ Last updated: ${new Date().toLocaleDateString()}
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('animate-in');
-                
                 if (entry.target.id === 'skills') {
                     setTimeout(animateProgressBars, 300);
+                }
+                if (entry.target.id === 'about') {
+                    animateStatCounters();
+                }
+                if (entry.target.id === 'experience') {
+                    document.getElementById('timeline')?.classList.add('in-view');
                 }
             }
         });
@@ -624,77 +628,38 @@ Last updated: ${new Date().toLocaleDateString()}
     const style = document.createElement('style');
     style.textContent = `
         @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
+            from { transform: translateX(100%); opacity: 0; }
+            to   { transform: translateX(0);    opacity: 1; }
         }
-        
         @keyframes slideOut {
-            from {
-                transform: translateX(0);
-                opacity: 1;
-            }
-            to {
-                transform: translateX(100%);
-                opacity: 0;
-            }
+            from { transform: translateX(0);    opacity: 1; }
+            to   { transform: translateX(100%); opacity: 0; }
         }
-        
-        .back-to-top {
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s, visibility 0.3s;
-        }
-        
-        .back-to-top.visible {
-            opacity: 1;
-            visibility: visible;
-        }
-        
-        .skill-card {
-            animation: fadeInUp 0.6s ease forwards;
-            opacity: 0;
-        }
-        
+        .back-to-top { opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; }
+        .back-to-top.visible { opacity: 1; visibility: visible; }
+        .skill-category-card { animation: fadeInUp 0.6s ease forwards; opacity: 0; }
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(30px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
-        
-        .skill-card:nth-child(1) { animation-delay: 0.1s; }
-        .skill-card:nth-child(2) { animation-delay: 0.2s; }
-        .skill-card:nth-child(3) { animation-delay: 0.3s; }
-        .skill-card:nth-child(4) { animation-delay: 0.4s; }
-        .skill-card:nth-child(5) { animation-delay: 0.5s; }
-        .skill-card:nth-child(6) { animation-delay: 0.6s; }
+        .skill-category-card:nth-child(1) { animation-delay: 0.1s; }
+        .skill-category-card:nth-child(2) { animation-delay: 0.2s; }
+        .skill-category-card:nth-child(3) { animation-delay: 0.3s; }
+        .skill-category-card:nth-child(4) { animation-delay: 0.4s; }
     `;
     document.head.appendChild(style);
     
-    // Trigger skill card animations
     setTimeout(() => {
-        document.querySelectorAll('.skill-card').forEach(card => {
+        document.querySelectorAll('.skill-category-card').forEach(card => {
             card.style.opacity = '1';
         });
     }, 100);
     
-    // Floating elements animation
     const floatingElements = document.querySelectorAll('.floating-element');
     floatingElements.forEach((element, index) => {
         element.style.animationDelay = `${index * 5}s`;
     });
     
-    // Highlight the 100% Frontend Focus card
     const highlightedStat = document.querySelector('.highlighted-stat');
     if (highlightedStat) {
         setInterval(() => {
@@ -705,5 +670,79 @@ Last updated: ${new Date().toLocaleDateString()}
         }, 4000);
     }
     
-    console.log('✅ Portfolio website fully initialized! ✨');
+    // =============================================
+    // ABOUT STATS — animated count-up
+    // =============================================
+    let statsAnimated = false;
+    function animateStatCounters() {
+        if (statsAnimated) return;
+        statsAnimated = true;
+
+        document.querySelectorAll('.stat-card h3[data-count-target]').forEach(el => {
+            const target = parseInt(el.getAttribute('data-count-target'), 10) || 0;
+            const suffix = el.getAttribute('data-count-suffix') || '';
+            let current = 0;
+            const stepTime = Math.max(Math.floor(1200 / Math.max(target, 1)), 20);
+
+            const timer = setInterval(() => {
+                current++;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                el.textContent = `${current}${suffix}`;
+            }, stepTime);
+        });
+    }
+
+    // =============================================
+    // CERTIFICATES — auto-detect custom images
+    // Same pattern as the project images: drop files into
+    // images/certificates/certificate-1.jpg ... certificate-4.jpg
+    // and each placeholder card upgrades to the real image automatically.
+    // =============================================
+    document.querySelectorAll('.cert-image-real').forEach(img => {
+        const customSrc = img.getAttribute('data-custom');
+        if (!customSrc) return;
+
+        const testImage = new Image();
+        testImage.src = customSrc + '?' + new Date().getTime();
+        testImage.onload = function () {
+            img.src = testImage.src;
+            img.style.display = 'block';
+            const placeholder = img.parentElement.querySelector('.cert-placeholder');
+            if (placeholder) placeholder.style.display = 'none';
+        };
+        // If the file isn't there, the placeholder stays visible — no error needed.
+    });
+
+    // =============================================
+    // COLLEGE LIFE — auto-detect custom photos
+    // Drop files into images/college-life/ as college-1.jpg ... college-4.jpg
+    // and each placeholder card upgrades to the real image automatically.
+    // =============================================
+    document.querySelectorAll('.college-photo-real').forEach(img => {
+        const customSrc = img.getAttribute('data-custom');
+        if (!customSrc) return;
+
+        const testImage = new Image();
+        testImage.src = encodeURI(customSrc) + '?' + new Date().getTime();
+        testImage.onload = function () {
+            img.src = testImage.src;
+            img.style.display = 'block';
+            const placeholder = img.parentElement.querySelector('.college-photo-placeholder');
+            if (placeholder) placeholder.style.display = 'none';
+        };
+        // If the file isn't there, the placeholder stays visible — no error needed.
+    });
+
+    const collegeLifeTrack = document.querySelector('.college-life-track');
+    if (collegeLifeTrack && collegeLifeTrack.children.length) {
+        const originalCards = Array.from(collegeLifeTrack.children);
+        originalCards.forEach((card) => {
+            collegeLifeTrack.appendChild(card.cloneNode(true));
+        });
+    }
+
+    console.log('Portfolio website fully initialized!');
 });

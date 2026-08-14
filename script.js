@@ -375,117 +375,44 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // =============================================
+    // BACKEND API URL
+    // Local development:https://devstudio-bfye.onrender.com/
+    // Same-origin deploy: /api/contact
+    // Custom deploy: set window.PORTFOLIO_BACKEND_URL before loading this script
     // =============================================
-// BACKEND API URL
-// =============================================
-const BACKEND_URL =
+   const BACKEND_URL =
     window.PORTFOLIO_BACKEND_URL ||
     'https://devstudio-bfye.onrender.com/api/contact';
+    if (contactForm) {
+        contactForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
 
-if (contactForm) {
-    contactForm.addEventListener('submit', async function (e) {
-        e.preventDefault();
+            // Collect form values
+            const formData = {
+                name:    contactForm.querySelector('input[name="name"]')?.value.trim()       || '',
+                email:   contactForm.querySelector('input[name="email"]')?.value.trim()      || '',
+                subject: contactForm.querySelector('input[name="subject"]')?.value.trim()    || 'Portfolio Contact',
+                message: contactForm.querySelector('textarea[name="message"]')?.value.trim() || ''
+            };
 
-        console.log('✅ Contact form submitted');
-        console.log('📡 API URL:', BACKEND_URL);
-
-        const formData = {
-            name: contactForm.querySelector('input[name="name"]')?.value.trim() || '',
-            email: contactForm.querySelector('input[name="email"]')?.value.trim() || '',
-            subject: contactForm.querySelector('input[name="subject"]')?.value.trim() || 'Portfolio Contact',
-            message: contactForm.querySelector('textarea[name="message"]')?.value.trim() || ''
-        };
-
-        console.log('📦 Form data:', formData);
-
-        // Front-end validation
-        if (!formData.name || !formData.email || !formData.message) {
-            showNotification('Please fill in all required fields!', 'error');
-            return;
-        }
-
-        if (formData.name.length < 2) {
-            showNotification('Name must be at least 2 characters.', 'error');
-            return;
-        }
-
-        if (formData.message.length < 10) {
-            showNotification('Message must be at least 10 characters.', 'error');
-            return;
-        }
-
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-        if (!emailRegex.test(formData.email)) {
-            showNotification('Please enter a valid email address!', 'error');
-            return;
-        }
-
-        // Safely find submit button
-        const submitBtn =
-            contactForm.querySelector('.submit-btn') ||
-            contactForm.querySelector('button[type="submit"]') ||
-            contactForm.querySelector('input[type="submit"]');
-
-        const originalBtnText = submitBtn
-            ? submitBtn.innerHTML
-            : '';
-
-        if (submitBtn) {
-            submitBtn.innerHTML =
-                '<i class="fas fa-spinner fa-spin"></i> Sending...';
-            submitBtn.disabled = true;
-        }
-
-        try {
-            console.log('🚀 Sending POST request...');
-
-            const response = await fetch(BACKEND_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            });
-
-            console.log('📡 Response status:', response.status);
-
-            const result = await response.json();
-
-            console.log('✅ Backend response:', result);
-
-            if (response.ok && result.success) {
-                showNotification(
-                    result.message || 'Message sent successfully!',
-                    'success'
-                );
-
-                contactForm.reset();
-            } else {
-                const errMsg =
-                    result.errors?.[0]?.message ||
-                    result.message ||
-                    'Something went wrong.';
-
-                showNotification(errMsg, 'error');
+            // Front-end validation (backend validates again server-side)
+            if (!formData.name || !formData.email || !formData.message) {
+                showNotification('Please fill in all required fields!', 'error');
+                return;
             }
-
-        } catch (err) {
-            console.error('❌ Contact form error:', err);
-
-            showNotification(
-                'Could not reach the server. Please try again.',
-                'error'
-            );
-
-        } finally {
-            if (submitBtn) {
-                submitBtn.innerHTML = originalBtnText;
-                submitBtn.disabled = false;
+            if (formData.name.length < 2) {
+                showNotification('Name must be at least 2 characters.', 'error');
+                return;
             }
-        }
-    });
-}
+            if (formData.message.length < 10) {
+                showNotification('Message must be at least 10 characters.', 'error');
+                return;
+            }
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(formData.email)) {
+                showNotification('Please enter a valid email address!', 'error');
+                return;
+            }
 
             // Show loading state on button
             const submitBtn = contactForm.querySelector('.submit-btn');

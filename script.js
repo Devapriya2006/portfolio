@@ -380,12 +380,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Same-origin deploy: /api/contact
     // Custom deploy: set window.PORTFOLIO_BACKEND_URL before loading this script
     // =============================================
-    const BACKEND_URL =
-        window.PORTFOLIO_BACKEND_URL ||
-        (window.location.protocol === 'file:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-            ? 'https://devstudio-bfye.onrender.com/api/contact'
-            : '/api/contact');
-
+   const BACKEND_URL =
+    window.PORTFOLIO_BACKEND_URL ||
+    'https://devstudio-bfye.onrender.com/api/contact';
     if (contactForm) {
         contactForm.addEventListener('submit', async function(e) {
             e.preventDefault();

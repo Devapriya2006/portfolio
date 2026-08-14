@@ -1,7 +1,7 @@
 // Modern script.js with profile photo fix and contact form handling
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Modern Portfolio Website Loaded Successfully!');
-    
+
     // Initialize loading screen
     const loadingScreen = document.querySelector('.loading-screen');
     if (loadingScreen) {
@@ -34,24 +34,26 @@ document.addEventListener('DOMContentLoaded', function() {
             'assets/background.png'
         ];
 
-        tryPath(0);
+        // Probe all candidates in parallel instead of one-by-one — total wait
+        // time is the slowest single request, not the sum of nine sequential
+        // ones. No cache-busting query, so repeat visits can hit a 304.
+        const probes = candidatePaths.map(path => new Promise((resolve, reject) => {
+            const img = new Image();
+            img.onload = () => resolve(path);
+            img.onerror = reject;
+            img.src = path;
+        }));
 
-        function tryPath(index) {
-            if (index >= candidatePaths.length) {
-                return; // no custom background image found — keep default look
-            }
-            const testImage = new Image();
-            testImage.src = candidatePaths[index] + '?' + new Date().getTime();
-            testImage.onload = function () {
-                bgLayer.style.backgroundImage = `url('${candidatePaths[index]}')`;
+        Promise.any(probes)
+            .then(path => {
+                bgLayer.style.backgroundImage = `url('${path}')`;
                 bgLayer.classList.add('has-image');
                 document.body.classList.add('custom-bg-active');
-                console.log('Custom background loaded from:', candidatePaths[index]);
-            };
-            testImage.onerror = function () {
-                tryPath(index + 1);
-            };
-        }
+                console.log('Custom background loaded from:', path);
+            })
+            .catch(() => {
+                // no custom background image found — keep default animated background
+            });
     })();
 
     // Navigation functionality
@@ -59,26 +61,26 @@ document.addEventListener('DOMContentLoaded', function() {
     const navMenu = document.querySelector('.nav-menu');
     const navLinks = document.querySelectorAll('.nav-link');
     const navbar = document.querySelector('.navbar');
-    
+
     if (hamburger && navMenu) {
         hamburger.addEventListener('click', () => {
             hamburger.classList.toggle('active');
             navMenu.classList.toggle('active');
         });
     }
-    
+
     navLinks.forEach(link => {
         link.addEventListener('click', () => {
             if (hamburger && navMenu) {
                 hamburger.classList.remove('active');
                 navMenu.classList.remove('active');
             }
-            
+
             navLinks.forEach(item => item.classList.remove('active'));
             link.classList.add('active');
         });
     });
-    
+
     // Navbar scroll effect + active section highlighting
     // Combined into one rAF-throttled, passive scroll handler so scrolling
     // never forces a synchronous layout read on every tick.
@@ -122,84 +124,53 @@ document.addEventListener('DOMContentLoaded', function() {
     }, { passive: true });
 
     // =============================================
-    // PROFILE PHOTO FIX - MULTI-LAYER FALLBACK SYSTEM
+    // PROFILE PHOTO — parallel path probing, no cache-busting,
+    // falls back to the initials avatar instead of a stock stranger photo.
     // =============================================
     const profilePhoto = document.getElementById('profilePhoto');
     const avatarInitials = document.getElementById('avatarInitials');
-    
-    const backupImages = [
-        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
-        'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
-        'https://images.unsplash.com/photo-1499996860823-5214fcc65f8f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
-        'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
-    ];
-    
+
     if (profilePhoto) {
-        let retryCount = 0;
-        const maxRetries = 3;
-        
-        function setProfilePhotoWithFallback() {
-            const localPaths = [
-                'DEVAPRIYA.jpeg?' + new Date().getTime(),
-                'devapriya.jpeg?' + new Date().getTime(),
-                'DEVAPRIYA.jpg?' + new Date().getTime(),
-                'devapriya.jpg?' + new Date().getTime(),
-                'images/DEVAPRIYA.jpeg?' + new Date().getTime(),
-                'assets/DEVAPRIYA.jpeg?' + new Date().getTime()
-            ];
-            
-            tryLocalPath(0);
-            
-            function tryLocalPath(index) {
-                if (index >= localPaths.length) {
-                    useFallbackImage();
-                    return;
-                }
-                
-                const localPhoto = new Image();
-                localPhoto.src = localPaths[index];
-                
-                localPhoto.onload = function() {
-                    console.log('Personal photo loaded successfully from:', localPaths[index]);
-                    profilePhoto.src = localPhoto.src;
-                    profilePhoto.style.display = 'block';
-                    if (avatarInitials) {
-                        avatarInitials.style.display = 'none';
-                    }
-                };
-                
-                localPhoto.onerror = function() {
-                    console.log('Failed to load from:', localPaths[index]);
-                    tryLocalPath(index + 1);
-                };
-                
-                setTimeout(() => {
-                    if (profilePhoto.naturalHeight === 0) {
-                        tryLocalPath(index + 1);
-                    }
-                }, 2000);
-            }
-            
-            function useFallbackImage() {
-                retryCount++;
-                const randomIndex = Math.floor(Math.random() * backupImages.length);
-                profilePhoto.src = backupImages[randomIndex];
+        const localPaths = [
+            'DEVAPRIYA.jpeg',
+            'devapriya.jpeg',
+            'DEVAPRIYA.jpg',
+            'devapriya.jpg',
+            'images/DEVAPRIYA.jpeg',
+            'assets/DEVAPRIYA.jpeg'
+        ];
+
+        const probes = localPaths.map(path => new Promise((resolve, reject) => {
+            const img = new Image();
+            img.onload = () => resolve(path);
+            img.onerror = reject;
+            img.src = path;
+        }));
+
+        Promise.any(probes)
+            .then(path => {
+                console.log('Personal photo loaded successfully from:', path);
+                profilePhoto.src = path;
                 profilePhoto.style.display = 'block';
-                
+                if (avatarInitials) {
+                    avatarInitials.style.display = 'none';
+                }
+            })
+            .catch(() => {
+                // No local photo found — show the initials avatar instead of
+                // a stranger's stock photo.
+                profilePhoto.style.display = 'none';
                 if (avatarInitials) {
                     avatarInitials.style.display = 'flex';
                     avatarInitials.style.background = 'rgba(99, 102, 241, 0.8)';
                     avatarInitials.style.backdropFilter = 'blur(5px)';
                 }
-            }
-        }
-        
-        setProfilePhotoWithFallback();
+            });
     }
 
     // Back to top button
     const backToTopButton = document.getElementById('backToTop');
-    
+
     if (backToTopButton) {
         window.addEventListener('scroll', () => {
             if (window.scrollY > 300) {
@@ -208,18 +179,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 backToTopButton.classList.remove('visible');
             }
         }, { passive: true });
-        
+
         backToTopButton.addEventListener('click', () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
     }
-    
+
     // Set current year in footer
     const currentYearSpan = document.getElementById('currentYear');
     if (currentYearSpan) {
         currentYearSpan.textContent = new Date().getFullYear();
     }
-    
+
     // Skills data, grouped by category
     const skillCategories = [
         {
@@ -293,13 +264,13 @@ document.addEventListener('DOMContentLoaded', function() {
     function animateProgressBars() {
         const progressBars = document.querySelectorAll('.progress-fill');
         const progressPercentages = document.querySelectorAll('.progress-percentage');
-        
+
         progressBars.forEach((bar, index) => {
             const progress = bar.getAttribute('data-progress');
             if (progress) {
                 bar.style.transition = 'width 1.5s ease-out';
                 bar.style.width = `${progress}%`;
-                
+
                 if (progressPercentages[index]) {
                     let currentProgress = 0;
                     const targetProgress = parseInt(progress);
@@ -316,16 +287,16 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-    
+
     // =============================================
     // CONTACT FORM HANDLING
     // =============================================
     const contactForm = document.querySelector('.contact-form');
-    
+
     // Notification system
     function showNotification(message, type = 'success') {
         document.querySelectorAll('.notification').forEach(n => n.remove());
-        
+
         const notification = document.createElement('div');
         notification.className = `notification ${type}`;
         notification.innerHTML = `
@@ -333,7 +304,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <span>${message}</span>
             <button class="notification-close"><i class="fas fa-times"></i></button>
         `;
-        
+
         notification.style.cssText = `
             position: fixed;
             top: 100px;
@@ -351,9 +322,9 @@ document.addEventListener('DOMContentLoaded', function() {
             max-width: 350px;
             backdrop-filter: blur(10px);
         `;
-        
+
         document.body.appendChild(notification);
-        
+
         const closeBtn = notification.querySelector('.notification-close');
         if (closeBtn) {
             closeBtn.style.cssText = `
@@ -365,7 +336,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 setTimeout(() => notification.remove(), 300);
             });
         }
-        
+
         setTimeout(() => {
             if (notification.parentNode) {
                 notification.style.animation = 'slideOut 0.3s ease forwards';
@@ -373,16 +344,17 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }, 5000);
     }
-    
+
     // =============================================
     // BACKEND API URL
-    // Local development:https://devstudio-bfye.onrender.com/
+    // Local development: https://devstudio-bfye.onrender.com/
     // Same-origin deploy: /api/contact
     // Custom deploy: set window.PORTFOLIO_BACKEND_URL before loading this script
     // =============================================
-   const BACKEND_URL =
-    window.PORTFOLIO_BACKEND_URL ||
-    'https://devstudio-bfye.onrender.com/api/contact';
+    const BACKEND_URL =
+        window.PORTFOLIO_BACKEND_URL ||
+        'https://devstudio-bfye.onrender.com/api/contact';
+
     if (contactForm) {
         contactForm.addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -449,7 +421,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-    
+
     // Typewriter effect
     const professionElement = document.querySelector('.profession');
     if (professionElement) {
@@ -458,10 +430,10 @@ document.addEventListener('DOMContentLoaded', function() {
         let charIndex = 0;
         let isDeleting = false;
         let typingSpeed = 100;
-        
+
         function typeWriter() {
             const currentProfession = professions[professionIndex];
-            
+
             if (isDeleting) {
                 professionElement.textContent = currentProfession.substring(0, charIndex - 1);
                 charIndex--;
@@ -471,30 +443,30 @@ document.addEventListener('DOMContentLoaded', function() {
                 charIndex++;
                 typingSpeed = 100;
             }
-            
+
             if (!isDeleting && charIndex === currentProfession.length) {
                 isDeleting = true;
                 typingSpeed = 1500;
                 setTimeout(typeWriter, typingSpeed);
                 return;
             }
-            
+
             if (isDeleting && charIndex === 0) {
                 isDeleting = false;
                 professionIndex = (professionIndex + 1) % professions.length;
                 typingSpeed = 500;
             }
-            
+
             setTimeout(typeWriter, typingSpeed);
         }
-        
+
         setTimeout(typeWriter, 1000);
     }
-    
+
     // CV Download functionality (nav button + About section resume button)
     const cvDownloadBtns = document.querySelectorAll('.cv-download-trigger');
     const cvFallback = document.getElementById('cvFallback');
-    
+
     cvDownloadBtns.forEach(cvDownloadBtn => {
         cvDownloadBtn.addEventListener('click', function(e) {
             const cvContent = `
@@ -528,7 +500,7 @@ Technique Polytechnic Institute (TPI)
 ================================================
 Last updated: ${new Date().toLocaleDateString()}
             `;
-            
+
             const pdfUrl = 'DEVAPRIYA CV (1).pdf';
             const testFrame = document.createElement('iframe');
             testFrame.style.display = 'none';
@@ -552,7 +524,7 @@ Last updated: ${new Date().toLocaleDateString()}
             document.body.appendChild(testFrame);
         });
     });
-    
+
     // Project images fallback handling
     window.addEventListener('load', function() {
         const projectImages = document.querySelectorAll('.project-image-real');
@@ -574,7 +546,7 @@ Last updated: ${new Date().toLocaleDateString()}
             };
             // If the custom file isn't there, silently keep the existing default image.
         });
-        
+
         projectImages.forEach((img, index) => {
             if (img) {
                 img.onerror = function() {
@@ -583,7 +555,7 @@ Last updated: ${new Date().toLocaleDateString()}
                         fallbackIcons[index].style.display = 'flex';
                     }
                 };
-                
+
                 if (img.complete && img.naturalHeight === 0) {
                     img.style.display = 'none';
                     if (fallbackIcons[index]) {
@@ -593,13 +565,13 @@ Last updated: ${new Date().toLocaleDateString()}
             }
         });
     });
-    
+
     // Scroll animations
     const observerOptions = {
         threshold: 0.1,
         rootMargin: '0px 0px -50px 0px'
     };
-    
+
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -616,11 +588,11 @@ Last updated: ${new Date().toLocaleDateString()}
             }
         });
     }, observerOptions);
-    
+
     document.querySelectorAll('section').forEach(section => {
         observer.observe(section);
     });
-    
+
     // Add animation keyframes dynamically
     const style = document.createElement('style');
     style.textContent = `
@@ -645,18 +617,18 @@ Last updated: ${new Date().toLocaleDateString()}
         .skill-category-card:nth-child(4) { animation-delay: 0.4s; }
     `;
     document.head.appendChild(style);
-    
+
     setTimeout(() => {
         document.querySelectorAll('.skill-category-card').forEach(card => {
             card.style.opacity = '1';
         });
     }, 100);
-    
+
     const floatingElements = document.querySelectorAll('.floating-element');
     floatingElements.forEach((element, index) => {
         element.style.animationDelay = `${index * 5}s`;
     });
-    
+
     const highlightedStat = document.querySelector('.highlighted-stat');
     if (highlightedStat) {
         setInterval(() => {
@@ -666,7 +638,7 @@ Last updated: ${new Date().toLocaleDateString()}
             }, 10);
         }, 4000);
     }
-    
+
     // =============================================
     // ABOUT STATS — animated count-up
     // =============================================

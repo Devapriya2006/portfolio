@@ -1,6 +1,5 @@
 const { validationResult } = require('express-validator');
 const { Resend } = require('resend');
-
 const {
   markEmailSent,
   saveContact,
@@ -30,13 +29,8 @@ const escapeHtml = (value = '') =>
 const hasEmailConfig = () =>
   Boolean(
     process.env.RESEND_API_KEY &&
-    process.env.EMAIL_TO &&
-    process.env.EMAIL_FROM
+    process.env.EMAIL_TO
   );
-
-// ==========================================
-// NOTIFICATION EMAIL
-// ==========================================
 
 const buildEmailHTML = ({
   name,
@@ -57,7 +51,7 @@ const buildEmailHTML = ({
     <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;background:#f9f9f9;border-radius:8px;overflow:hidden;">
 
       <div style="background:linear-gradient(135deg,#667eea,#764ba2);padding:30px;text-align:center;">
-        <h1 style="color:white;margin:0;">
+        <h1 style="color:white;margin:0;font-size:24px;">
           New Portfolio Message
         </h1>
       </div>
@@ -67,7 +61,7 @@ const buildEmailHTML = ({
         <table style="width:100%;border-collapse:collapse;">
 
           <tr>
-            <td style="padding:10px;font-weight:bold;color:#555;">
+            <td style="padding:10px;font-weight:bold;color:#555;width:100px;">
               Name:
             </td>
             <td style="padding:10px;color:#333;">
@@ -80,7 +74,7 @@ const buildEmailHTML = ({
               Email:
             </td>
             <td style="padding:10px;">
-              <a href="mailto:${safeEmail}">
+              <a href="mailto:${safeEmail}" style="color:#667eea;">
                 ${safeEmail}
               </a>
             </td>
@@ -97,14 +91,16 @@ const buildEmailHTML = ({
 
         </table>
 
-        <div style="margin-top:20px;padding:20px;background:#f0f0f5;border-left:4px solid #667eea;">
-          <p style="font-weight:bold;color:#555;">
+        <div style="margin-top:20px;padding:20px;background:#f0f0f5;border-left:4px solid #667eea;border-radius:4px;">
+
+          <p style="font-weight:bold;color:#555;margin:0 0 10px;">
             Message:
           </p>
 
-          <p style="color:#333;line-height:1.6;white-space:pre-wrap;">
+          <p style="color:#333;line-height:1.6;margin:0;white-space:pre-wrap;">
             ${safeMessage}
           </p>
+
         </div>
 
       </div>
@@ -117,10 +113,6 @@ const buildEmailHTML = ({
   `;
 };
 
-// ==========================================
-// THANK-YOU EMAIL
-// ==========================================
-
 const buildThankYouHTML = (name) => {
   const safeName = escapeHtml(name);
 
@@ -129,25 +121,23 @@ const buildThankYouHTML = (name) => {
 
       <div style="background:linear-gradient(135deg,#667eea,#764ba2);padding:30px;text-align:center;border-radius:8px 8px 0 0;">
         <h1 style="color:white;margin:0;">
-          Thanks, ${safeName}! 👋
+          Thanks, ${safeName}!
         </h1>
       </div>
 
-      <div style="padding:30px;background:white;border:1px solid #eee;">
+      <div style="padding:30px;background:white;border-radius:0 0 8px 8px;border:1px solid #eee;">
 
         <p style="color:#333;line-height:1.6;">
-          Thank you for reaching out through my portfolio.
-          I have successfully received your message.
+          I have received your message and will get back to you as soon as possible,
+          usually within 24-48 hours.
         </p>
 
         <p style="color:#333;line-height:1.6;">
-          I'll review your message and get back to you as soon as possible,
-          usually within 24–48 hours.
+          In the meantime, feel free to check out my projects on my portfolio.
         </p>
 
         <p style="color:#555;margin-top:30px;">
-          Best regards,<br>
-          <strong>Devapriya Paul Kundu</strong><br>
+          - Devapriya Paul Kundu<br>
           <small style="color:#888;">
             Computer Science & Technology Student | Web Developer
           </small>
@@ -159,22 +149,14 @@ const buildThankYouHTML = (name) => {
   `;
 };
 
-// ==========================================
-// SUBMIT CONTACT
-// ==========================================
-
 const submitContact = async (req, res, next) => {
   try {
-    // --------------------------------------
-    // VALIDATION
-    // --------------------------------------
-
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
       return res.status(400).json({
         success: false,
-        message: 'Validation failed.',
+        message: 'Validation failed. Please fix the errors below.',
         errors: errors.array().map((error) => ({
           field: error.path,
           message: error.msg,
@@ -189,10 +171,6 @@ const submitContact = async (req, res, next) => {
       message,
     } = req.body;
 
-    // --------------------------------------
-    // SAVE CONTACT
-    // --------------------------------------
-
     const { contact, storage } = await saveContact({
       name,
       email,
@@ -201,13 +179,11 @@ const submitContact = async (req, res, next) => {
       ipAddress: req.ip,
     });
 
-    // --------------------------------------
-    // CHECK RESEND CONFIG
-    // --------------------------------------
+    let emailSent = false;
 
     if (!hasEmailConfig()) {
       console.warn(
-        'Missing RESEND_API_KEY, EMAIL_TO or EMAIL_FROM.'
+        'RESEND_API_KEY or EMAIL_TO is missing. Contact saved without email.'
       );
 
       return res.status(201).json({
@@ -225,23 +201,16 @@ const submitContact = async (req, res, next) => {
 
     const resend = getResend();
 
-    let notificationSent = false;
-    let thankYouSent = false;
-
     // ==========================================
-    // 1. SEND MESSAGE TO YOU
+    // SEND CONTACT MESSAGE TO DEVAPRIYA
     // ==========================================
 
     try {
       const result = await resend.emails.send({
-        from: process.env.EMAIL_FROM,
+        from: 'onboarding@resend.dev',
         to: process.env.EMAIL_TO,
-
-        // When you click Reply, it replies directly to visitor
-        replyTo: email,
-
+        reply_to: email,
         subject: `[Portfolio] ${subject}`,
-
         html: buildEmailHTML({
           name,
           email,
@@ -250,76 +219,44 @@ const submitContact = async (req, res, next) => {
         }),
       });
 
-      console.log(
-        'Notification email sent successfully:',
-        result
-      );
+      console.log('Notification email sent:', result);
 
-      notificationSent = true;
+      emailSent = true;
 
       await markEmailSent(contact, storage);
-
-    } catch (error) {
+    } catch (emailError) {
       console.error(
         'Notification email failed:',
-        error
+        emailError
       );
     }
 
     // ==========================================
-    // 2. SEND THANK-YOU TO VISITOR
+    // SEND THANK-YOU EMAIL TO VISITOR
     // ==========================================
 
     try {
       const result = await resend.emails.send({
-        from: process.env.EMAIL_FROM,
-
-        // IMPORTANT:
-        // This is the visitor's email
+        from: 'onboarding@resend.dev',
         to: email,
-
-        subject: 'Thank you for contacting me!',
-
+        subject: 'Thanks for reaching out!',
         html: buildThankYouHTML(name),
       });
 
-      console.log(
-        'Thank-you email sent successfully:',
-        result
-      );
-
-      thankYouSent = true;
-
-    } catch (error) {
+      console.log('Thank-you email sent:', result);
+    } catch (emailError) {
       console.error(
         'Thank-you email failed:',
-        error
+        emailError
       );
-    }
-
-    // ==========================================
-    // RESPONSE
-    // ==========================================
-
-    let responseMessage =
-      "Message received! I'll get back to you soon.";
-
-    if (notificationSent && thankYouSent) {
-      responseMessage =
-        "Message received! A confirmation email has also been sent to you.";
-    } else if (notificationSent) {
-      responseMessage =
-        "Message received! I'll get back to you soon.";
     }
 
     return res.status(201).json({
       success: true,
-      message: responseMessage,
 
-      emailStatus: {
-        notificationSent,
-        thankYouSent,
-      },
+      message: emailSent
+        ? "Message received! I've also sent a confirmation to your email. I'll get back to you soon."
+        : "Message received! I'll get back to you soon.",
 
       data: {
         id: contact._id,

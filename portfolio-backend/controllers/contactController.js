@@ -201,55 +201,56 @@ const submitContact = async (req, res, next) => {
 
     const resend = getResend();
 
-    // ==========================================
-    // SEND CONTACT MESSAGE TO DEVAPRIYA
-    // ==========================================
+ // ==========================================
+// SEND CONTACT MESSAGE TO DEVAPRIYA
+// ==========================================
 
-    try {
-      const result = await resend.emails.send({
-        from: 'onboarding@resend.dev',
-        to: process.env.EMAIL_TO,
-        reply_to: email,
-        subject: `[Portfolio] ${subject}`,
-        html: buildEmailHTML({
-          name,
-          email,
-          subject,
-          message,
-        }),
-      });
+try {
+  const result = await resend.emails.send({
+    from: 'Devapriya Portfolio <contact@imdevapriya.me>',
+    to: process.env.EMAIL_TO,
+    reply_to: email,
+    subject: `[Portfolio] ${subject}`,
+    html: buildEmailHTML({
+      name,
+      email,
+      subject,
+      message,
+    }),
+  });
 
-      console.log('Notification email sent:', result);
+  console.log('Notification email sent:', result);
 
-      emailSent = true;
+  emailSent = true;
 
-      await markEmailSent(contact, storage);
-    } catch (emailError) {
-      console.error(
-        'Notification email failed:',
-        emailError
-      );
-    }
+  await markEmailSent(contact, storage);
+} catch (emailError) {
+  console.error(
+    'Notification email failed:',
+    emailError
+  );
+}
 
-    // ==========================================
-    // SEND THANK-YOU EMAIL TO VISITOR
-    // ==========================================
 
-    try {
-      const result = await resend.emails.send({
-        from: 'onboarding@resend.dev',
-        to: email,
-        subject: 'Thanks for reaching out!',
-        html: buildThankYouHTML(name),
-      });
+// ==========================================
+// SEND THANK-YOU EMAIL TO VISITOR
+// ==========================================
 
-      console.log('Thank-you email sent:', result);
-    } catch (emailError) {
-      console.error(
-        'Thank-you email failed:',
-        emailError
-      );
-    }
+try {
+  const result = await resend.emails.send({
+    from: 'Devapriya Portfolio <noreply@imdevapriya.me>',
+    to: email,
+    subject: 'Thanks for reaching out!',
+    html: buildThankYouHTML(name),
+  });
+
+  console.log('Thank-you email sent:', result);
+} catch (emailError) {
+  console.error(
+    'Thank-you email failed:',
+    emailError
+  );
+}
 
     return res.status(201).json({
       success: true,

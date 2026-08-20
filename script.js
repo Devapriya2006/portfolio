@@ -200,7 +200,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 { name: 'HTML5', progress: 50 },
                 { name: 'CSS3', progress: 30 },
                 { name: 'JavaScript', progress: 30 },
-                { name: 'Responsive Design', progress: 55 }
+              
             ]
         },
         {
@@ -222,9 +222,9 @@ document.addEventListener('DOMContentLoaded', function() {
             name: 'Tools & Systems',
             icon: 'fas fa-microchip',
             skills: [
-                { name: 'IoT & Embedded Systems', progress: 75 },
-                { name: 'OpenCV Basics', progress: 70 },
-                { name: 'Git & GitHub', progress: 60 }
+                { name: 'IoT & Embedded Systems', progress: 45 },
+                { name: 'OpenCV Basics', progress: 45 },
+                { name: 'Git & GitHub', progress: 50 }
             ]
         }
     ];

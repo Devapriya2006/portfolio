@@ -200,7 +200,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 { name: 'HTML5', progress: 50 },
                 { name: 'CSS3', progress: 30 },
                 { name: 'JavaScript', progress: 30 },
-              
+
             ]
         },
         {
@@ -715,8 +715,11 @@ Last updated: ${new Date().toLocaleDateString()}
 
     // =============================================
     // FLOATING MUSIC PLAYER
-    // Drop a file named "song.mp3" next to index.html and click the
-    // floating music button (top-right, below the navbar) to play it.
+    // Drop a file named "song.mp3" next to index.html (same folder as
+    // index.html on your deployed server) and click the floating music
+    // button (top-right, below the navbar) to play it.
+    // The <audio> tag's <source src="..."> in index.html MUST match this
+    // exact filename/path, or the browser will 404 on it.
     // Browsers block audio autoplay, so playback only starts on click —
     // that's expected behavior, not a bug.
     // =============================================
@@ -724,6 +727,13 @@ Last updated: ${new Date().toLocaleDateString()}
     const bgMusic = document.getElementById('bgMusic');
 
     if (musicToggle && bgMusic) {
+        // Log a clear diagnostic the moment the browser fails to resolve
+        // the audio source, instead of only finding out on click.
+        bgMusic.addEventListener('error', () => {
+            const src = bgMusic.querySelector('source')?.src || bgMusic.currentSrc;
+            console.error('Background music failed to load. Checked URL:', src);
+        });
+
         musicToggle.addEventListener('click', () => {
             if (bgMusic.paused) {
                 bgMusic.play().then(() => {

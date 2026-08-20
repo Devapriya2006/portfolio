@@ -307,6 +307,12 @@ p {
     align-items: center;
 }
 
+.navbar-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
 .logo h1 {
     font-size: 1.8rem;
     margin: 0;
@@ -1582,23 +1588,19 @@ p {
 }
 
 /* =============================================
-   Floating Music Toggle Button
-   Sits above the back-to-top button on the right
-   edge, matches the glass/gold theme used across
-   the rest of the site.
+   Music Toggle Button — lives in the navbar now,
+   to the left of the logo. Matches the glass/gold
+   theme used across the rest of the site.
    ============================================= */
 .music-toggle {
-    position: fixed;
-    top: 100px;
-    right: 30px;
-    z-index: 999;
-    width: 56px;
-    height: 56px;
+    flex-shrink: 0;
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
     border: 1px solid var(--glass-border);
     background: var(--glass-bg);
     color: var(--gold);
-    font-size: 1.25rem;
+    font-size: 1.05rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1610,7 +1612,7 @@ p {
 }
 
 .music-toggle:hover {
-    transform: translateY(-4px) scale(1.06);
+    transform: translateY(-2px) scale(1.06);
     border-color: var(--gold);
     box-shadow: 0 15px 35px -5px rgba(56, 189, 248, 0.45);
 }
@@ -1632,13 +1634,14 @@ p {
 }
 
 @media (max-width: 768px) {
+    .navbar-left {
+        gap: 10px;
+    }
+
     .music-toggle {
-        top: auto;
-        bottom: 100px;
-        right: 20px;
-        width: 48px;
-        height: 48px;
-        font-size: 1.05rem;
+        width: 36px;
+        height: 36px;
+        font-size: 0.92rem;
     }
 }
 

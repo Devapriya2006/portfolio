@@ -1581,6 +1581,67 @@ p {
     box-shadow: 0 15px 40px -5px rgba(0, 184, 217, 0.4);
 }
 
+/* =============================================
+   Floating Music Toggle Button
+   Sits above the back-to-top button on the right
+   edge, matches the glass/gold theme used across
+   the rest of the site.
+   ============================================= */
+.music-toggle {
+    position: fixed;
+    top: 100px;
+    right: 30px;
+    z-index: 999;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: 1px solid var(--glass-border);
+    background: var(--glass-bg);
+    color: var(--gold);
+    font-size: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    box-shadow: var(--shadow-lg);
+    transition: var(--transition);
+}
+
+.music-toggle:hover {
+    transform: translateY(-4px) scale(1.06);
+    border-color: var(--gold);
+    box-shadow: 0 15px 35px -5px rgba(56, 189, 248, 0.45);
+}
+
+.music-toggle.playing {
+    background: var(--gradient-primary);
+    color: white;
+    border-color: transparent;
+    box-shadow: var(--shadow-primary);
+}
+
+.music-toggle.playing i {
+    animation: musicSpin 2.5s linear infinite;
+}
+
+@keyframes musicSpin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+@media (max-width: 768px) {
+    .music-toggle {
+        top: auto;
+        bottom: 100px;
+        right: 20px;
+        width: 48px;
+        height: 48px;
+        font-size: 1.05rem;
+    }
+}
+
 /* Loading Animation */
 .loading-screen {
     position: fixed;

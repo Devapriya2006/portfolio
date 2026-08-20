@@ -713,5 +713,46 @@ Last updated: ${new Date().toLocaleDateString()}
         });
     }
 
+    // =============================================
+    // FLOATING MUSIC PLAYER
+    // Drop a file named "song.mp3" next to index.html and click the
+    // floating music button (top-right, below the navbar) to play it.
+    // Browsers block audio autoplay, so playback only starts on click —
+    // that's expected behavior, not a bug.
+    // =============================================
+    const musicToggle = document.getElementById('musicToggle');
+    const bgMusic = document.getElementById('bgMusic');
+
+    if (musicToggle && bgMusic) {
+        musicToggle.addEventListener('click', () => {
+            if (bgMusic.paused) {
+                bgMusic.play().then(() => {
+                    musicToggle.classList.add('playing');
+                    musicToggle.querySelector('i').className = 'fas fa-pause';
+                    musicToggle.setAttribute('aria-label', 'Pause music');
+                    musicToggle.title = 'Pause music';
+                }).catch(() => {
+                    showNotification('Add "song.mp3" next to index.html to enable music.', 'info');
+                });
+            } else {
+                bgMusic.pause();
+                musicToggle.classList.remove('playing');
+                musicToggle.querySelector('i').className = 'fas fa-music';
+                musicToggle.setAttribute('aria-label', 'Play music');
+                musicToggle.title = 'Play music';
+            }
+        });
+
+        // If the song ends and isn't set to loop for some reason, reset the icon
+        bgMusic.addEventListener('pause', () => {
+            musicToggle.classList.remove('playing');
+            musicToggle.querySelector('i').className = 'fas fa-music';
+        });
+        bgMusic.addEventListener('play', () => {
+            musicToggle.classList.add('playing');
+            musicToggle.querySelector('i').className = 'fas fa-pause';
+        });
+    }
+
     console.log('Portfolio website fully initialized!');
 });

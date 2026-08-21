@@ -301,11 +301,14 @@ p {
     padding: 15px 0;
 }
 
+
 .navbar .container {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    
+    gap: 60px;
+}
+
 .navbar-left {
     display: flex;
     align-items: center;

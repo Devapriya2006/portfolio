@@ -303,10 +303,9 @@ p {
 
 .navbar .container {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    gap: 60px;
-
+    
 .navbar-left {
     display: flex;
     align-items: center;
